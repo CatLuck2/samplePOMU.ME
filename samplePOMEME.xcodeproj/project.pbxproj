@@ -31,6 +31,12 @@
 		D7957ECB21C34FCF00F611F3 /* icons8-コンタクト-45.png in Resources */ = {isa = PBXBuildFile; fileRef = D7957ECA21C34FCF00F611F3 /* icons8-コンタクト-45.png */; };
 		D7957ECE21C3532300F611F3 /* TimeLineViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7957ECC21C3532300F611F3 /* TimeLineViewCell.swift */; };
 		D7957ECF21C3532300F611F3 /* TimeLineViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7957ECD21C3532300F611F3 /* TimeLineViewCell.xib */; };
+		D799A62A21C76111005DCE9D /* 猫.png in Resources */ = {isa = PBXBuildFile; fileRef = D799A62921C7610F005DCE9D /* 猫.png */; };
+		D799A62F21C765E5005DCE9D /* UserPageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D799A62D21C765E5005DCE9D /* UserPageViewCell.swift */; };
+		D799A63021C765E5005DCE9D /* UserPageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D799A62E21C765E5005DCE9D /* UserPageViewCell.xib */; };
+		D799A63221C7973F005DCE9D /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D799A63121C7973F005DCE9D /* DetailViewController.swift */; };
+		D799A63521C798BA005DCE9D /* DetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D799A63321C798BA005DCE9D /* DetailViewCell.swift */; };
+		D799A63621C798BA005DCE9D /* DetailViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D799A63421C798BA005DCE9D /* DetailViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +66,12 @@
 		D7957ECA21C34FCF00F611F3 /* icons8-コンタクト-45.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-コンタクト-45.png"; sourceTree = "<group>"; };
 		D7957ECC21C3532300F611F3 /* TimeLineViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewCell.swift; sourceTree = "<group>"; };
 		D7957ECD21C3532300F611F3 /* TimeLineViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeLineViewCell.xib; sourceTree = "<group>"; };
+		D799A62921C7610F005DCE9D /* 猫.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "猫.png"; sourceTree = "<group>"; };
+		D799A62D21C765E5005DCE9D /* UserPageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPageViewCell.swift; sourceTree = "<group>"; };
+		D799A62E21C765E5005DCE9D /* UserPageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserPageViewCell.xib; sourceTree = "<group>"; };
+		D799A63121C7973F005DCE9D /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		D799A63321C798BA005DCE9D /* DetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewCell.swift; sourceTree = "<group>"; };
+		D799A63421C798BA005DCE9D /* DetailViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailViewCell.xib; sourceTree = "<group>"; };
 		F21D86AEC75D37695A4F42CF /* Pods-samplePOMEME.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samplePOMEME.debug.xcconfig"; path = "Pods/Target Support Files/Pods-samplePOMEME/Pods-samplePOMEME.debug.xcconfig"; sourceTree = "<group>"; };
 		F741D39B9C2F3CEE4D0A9207 /* Pods-samplePOMEME.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samplePOMEME.release.xcconfig"; path = "Pods/Target Support Files/Pods-samplePOMEME/Pods-samplePOMEME.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,6 +128,7 @@
 			children = (
 				D7957E9421C3492900F611F3 /* AppDelegate.swift */,
 				D7957E9621C3492900F611F3 /* ViewController.swift */,
+				D799A63121C7973F005DCE9D /* DetailViewController.swift */,
 				D7957EB221C34D3B00F611F3 /* UserPageViewController.swift */,
 				D7957EB421C34D4800F611F3 /* ContactViewController.swift */,
 				D7957EAE21C34C8A00F611F3 /* SignUPController.swift */,
@@ -123,8 +136,13 @@
 				D7957EAA21C34BF300F611F3 /* SignUP.storyboard */,
 				D7957EAC21C34BFB00F611F3 /* SignIN.storyboard */,
 				D7957E9821C3492900F611F3 /* Main.storyboard */,
+				D799A63321C798BA005DCE9D /* DetailViewCell.swift */,
+				D799A63421C798BA005DCE9D /* DetailViewCell.xib */,
+				D799A62D21C765E5005DCE9D /* UserPageViewCell.swift */,
+				D799A62E21C765E5005DCE9D /* UserPageViewCell.xib */,
 				D7957ECC21C3532300F611F3 /* TimeLineViewCell.swift */,
 				D7957ECD21C3532300F611F3 /* TimeLineViewCell.xib */,
+				D799A62921C7610F005DCE9D /* 猫.png */,
 				D7957EC421C34F1E00F611F3 /* icons8-ホーム-48.png */,
 				D7957ECA21C34FCF00F611F3 /* icons8-コンタクト-45.png */,
 				D7957EC721C34F8000F611F3 /* icons8-インフォ-45.png */,
@@ -204,7 +222,9 @@
 			files = (
 				D7957EBD21C34DFA00F611F3 /* icons8-フェイスブック-96.png in Resources */,
 				D7957EC921C34F8000F611F3 /* icons8-インフォ-45.png in Resources */,
+				D799A62A21C76111005DCE9D /* 猫.png in Resources */,
 				D7957EC521C34F1E00F611F3 /* icons8-ホーム-48.png in Resources */,
+				D799A63621C798BA005DCE9D /* DetailViewCell.xib in Resources */,
 				D7957E9F21C3492B00F611F3 /* LaunchScreen.storyboard in Resources */,
 				D7957E9C21C3492B00F611F3 /* Assets.xcassets in Resources */,
 				D7957EC121C34DFA00F611F3 /* icons8-ツイッター-96.png in Resources */,
@@ -213,6 +233,7 @@
 				D7957EC821C34F8000F611F3 /* icons8-マルチエディット-45.png in Resources */,
 				D7957ECB21C34FCF00F611F3 /* icons8-コンタクト-45.png in Resources */,
 				D7957EC021C34DFA00F611F3 /* icons8-インスタグラム-filled-96.png in Resources */,
+				D799A63021C765E5005DCE9D /* UserPageViewCell.xib in Resources */,
 				D7957EBF21C34DFA00F611F3 /* icons8-画像-100.png in Resources */,
 				D7957EBE21C34DFA00F611F3 /* icons8-鉛筆-100.png in Resources */,
 				D7957EAD21C34BFB00F611F3 /* SignIN.storyboard in Resources */,
@@ -281,11 +302,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D799A63221C7973F005DCE9D /* DetailViewController.swift in Sources */,
+				D799A62F21C765E5005DCE9D /* UserPageViewCell.swift in Sources */,
 				D7957E9721C3492900F611F3 /* ViewController.swift in Sources */,
 				D7957ECE21C3532300F611F3 /* TimeLineViewCell.swift in Sources */,
 				D7957EB121C34C9A00F611F3 /* SignINController.swift in Sources */,
 				D7957EB321C34D3B00F611F3 /* UserPageViewController.swift in Sources */,
 				D7957E9521C3492900F611F3 /* AppDelegate.swift in Sources */,
+				D799A63521C798BA005DCE9D /* DetailViewCell.swift in Sources */,
 				D7957EAF21C34C8A00F611F3 /* SignUPController.swift in Sources */,
 				D7957EB521C34D4800F611F3 /* ContactViewController.swift in Sources */,
 			);
