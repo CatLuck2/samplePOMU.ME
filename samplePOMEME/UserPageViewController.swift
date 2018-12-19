@@ -113,19 +113,29 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath)
+        //背景色を初期化
+        cell.backgroundColor = UIColor.white
+//        cell.contentView.backgroundColor = UIColor.white
+        cell.textLabel?.textColor = UIColor.black
         //マイページの時は非常時、編集モードなら表示する
         if isEditMode == false && objects.count - 1 == indexPath.row {
+            print(1)
             return cell
+            //isEditMode:true || objects.count -1 != indexPath.row
         } else {
             if objects[indexPath.row].title == "追加する" {
-                cell.contentView.backgroundColor = UIColor.blue
+                print(2)
+                cell.backgroundColor = UIColor.blue
+                cell.textLabel?.textColor = UIColor.white
             } else {
+                print(3)
                 //URLの場合
                 if objects[indexPath.row].link != "" {
+                    print(4)
                     cell.contentView.backgroundColor = cell_color
-                    cell.backgroundColor = cell_color
                     //コメントの場合
                 } else {
+                    print(5)
                     cell.contentView.backgroundColor = UIColor.white
                 }
             }
@@ -136,6 +146,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         //編集画面なら
         if isEditMode == true {
             //"追加する"をタップしたら
@@ -166,7 +177,6 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     })
                     let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
                         commentAlert.dismiss(animated: true, completion: nil)
-                        tableView.deselectRow(at: indexPath, animated: true)
                     })
                     //アラートにtextFieldを追加
                     commentAlert.addTextField { (text:UITextField!) in
