@@ -52,14 +52,14 @@
             <objects>
                 <viewController id="Y5E-M8-ueB" customClass="DetailViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zU0-ta-GMJ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="1300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="1100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z3P-5g-76u">
-                                <rect key="frame" x="0.0" y="64" width="375" height="1187"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="987"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q7g-MK-94n">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1187"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="987"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="B0t-Ml-l5R">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="163"/>
@@ -110,7 +110,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="375" id="bfc-0W-3ui"/>
-                                            <constraint firstAttribute="height" constant="1187" id="fXi-xN-to2"/>
+                                            <constraint firstAttribute="height" constant="987" id="fXi-xN-to2"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -138,7 +138,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <size key="freeformSize" width="375" height="1300"/>
+                    <size key="freeformSize" width="375" height="1100"/>
                     <connections>
                         <outlet property="facebookIcon" destination="8Mr-sU-ewJ" id="Lw1-BF-KuC"/>
                         <outlet property="iconImage" destination="Npf-rD-hYT" id="yZD-uM-tLZ"/>
@@ -168,10 +168,14 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5sm-4R-Uym">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1187"/>
                                         <subviews>
-                                            <imageView tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="vl5-PN-sac">
+                                            <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="vl5-PN-sac">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="163"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.96768277519893897" green="0.96768277519893897" blue="0.96768277519893897" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="Neo-T5-vJS" appends="YES" id="bhT-ET-ZqF"/>
+                                                </connections>
                                             </imageView>
                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="lEB-kf-4x7">
                                                 <rect key="frame" x="0.0" y="531" width="375" height="511"/>
@@ -182,9 +186,13 @@
                                                     <outlet property="delegate" destination="BYZ-38-t0r" id="YUT-vG-IgI"/>
                                                 </connections>
                                             </tableView>
-                                            <imageView tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="Udt-du-lEc">
+                                            <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="Udt-du-lEc">
                                                 <rect key="frame" x="17" y="108" width="100" height="100"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="DOD-2t-RFQ" appends="YES" id="AlX-8l-m4S"/>
+                                                </connections>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="@nekokichi" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hw4-8r-m4I">
                                                 <rect key="frame" x="16" y="216" width="170" height="21"/>
@@ -204,30 +212,42 @@
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-ツイッター-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="Se8-k1-Eb4">
                                                 <rect key="frame" x="45" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="wD5-Or-k0o" appends="YES" id="koC-xT-GJB"/>
+                                                </connections>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="m8N-C4-mf0">
                                                 <rect key="frame" x="147" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="VbQ-SW-XmS" appends="YES" id="F02-tG-3IB"/>
+                                                </connections>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="y4A-fz-col">
                                                 <rect key="frame" x="251" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            </imageView>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fp-0O-dUW">
-                                                <rect key="frame" x="57" y="1088" width="260" height="48"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                <state key="normal" title="マイページを編集する"/>
+                                                <gestureRecognizers/>
                                                 <connections>
-                                                    <action selector="editUserPage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qxy-ng-1tK"/>
+                                                    <outletCollection property="gestureRecognizers" destination="fwr-R5-d22" appends="YES" id="zF3-OU-cc7"/>
                                                 </connections>
-                                            </button>
+                                            </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gzi-uq-eMX">
                                                 <rect key="frame" x="194" y="179" width="141" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <state key="normal" title="リンクカラーを設定"/>
                                                 <connections>
                                                     <action selector="linkcolorButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hYe-dd-Zxe"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fp-0O-dUW">
+                                                <rect key="frame" x="58" y="1095" width="260" height="48"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <state key="normal" title="マイページを編集"/>
+                                                <connections>
+                                                    <action selector="editUserPage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qxy-ng-1tK"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -264,6 +284,7 @@
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1300"/>
                     <connections>
+                        <outlet property="editUserPage" destination="0fp-0O-dUW" id="N2R-Jk-7Mt"/>
                         <outlet property="facebookIcon" destination="y4A-fz-col" id="J9E-XH-ErK"/>
                         <outlet property="iconImage" destination="Udt-du-lEc" id="wrK-EV-hHT"/>
                         <outlet property="instagramIcon" destination="m8N-C4-mf0" id="DEE-Xd-5xa"/>
@@ -276,6 +297,31 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Neo-T5-vJS" userLabel="theme Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="themeImageAction:" destination="BYZ-38-t0r" id="Zgh-Nu-nKg"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="DOD-2t-RFQ" userLabel="icon Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="iconImageAction:" destination="BYZ-38-t0r" id="C8c-pY-kNZ"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="wD5-Or-k0o" userLabel="twitter Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="twitterIconAction:" destination="BYZ-38-t0r" id="kDk-qu-EHp"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="VbQ-SW-XmS" userLabel="instagram Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="instagramIconAction:" destination="BYZ-38-t0r" id="oZA-pp-Ilt"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="fwr-R5-d22" userLabel="facebook Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="facebookIconAction:" destination="BYZ-38-t0r" id="Noe-zu-FsI"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1772" y="420.98950524737637"/>
         </scene>

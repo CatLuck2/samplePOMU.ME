@@ -9,42 +9,43 @@
 import UIKit
 import NCMB
 
-class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate  {
-    
-    //imagePickerControllerのタップイベント
-    
-    //alertのタップイベント
+class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate  {
     
     //imagePickerControllerの起動元を判別
     var identification_imagePicker = ""
+    
+    //データベース保存用のSNSURL
+    var twitterURL = ""
+    var instagramURL = ""
+    var facebookURL = ""
+    
+    //編集画面かを識別する
+    var isEditMode = false
+    
+    //タップしたSNSを識別する
+    var name_sns = ""
     
     //セルの内容を格納する配列
     let cellArray = ["1","2","3","4","5","1","2","3","4","5","1","2"]
     
     @IBOutlet weak var tableView: UITableView!
-    
     @IBOutlet weak var themeImage: UIImageView!
-    
     @IBOutlet weak var iconImage: UIImageView!
-    
     @IBOutlet weak var userID: UILabel!
-    
     @IBOutlet weak var linkcolorButton: UIButton!
-    
     @IBOutlet weak var profileLabel: UITextView!
-    
     @IBOutlet weak var twitterIcon: UIImageView!
-    
     @IBOutlet weak var instagramIcon: UIImageView!
-    
     @IBOutlet weak var facebookIcon: UIImageView!
-    
-    
+    @IBOutlet weak var editUserPage: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //リンクカラーボタンを非表示に
         linkcolorButton.isHidden = true
+        
+        //プロフィール文のデリゲート
+        profileLabel.delegate = self
 
         //角丸
         iconImage.layer.cornerRadius = 50
@@ -70,9 +71,19 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         //tableViewの不要なセルを削除
         tableView.tableFooterView = UIView()
         
-        //GestureRecognizerのDelegate
-        themeImage.isUserInteractionEnabled = false
-        iconImage.isUserInteractionEnabled = false
+        //imagePicker用のタップジェスチャー
+        let imageGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
+        imageGesture.delegate = self
+        //Alert用のタップジェスチャー
+        let alertGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
+        alertGesture.delegate = self
+        //２つのimageViewにタップジェスチャーを追加
+        self.themeImage.addGestureRecognizer(imageGesture)
+        self.iconImage.addGestureRecognizer(imageGesture)
+        //３つのSNSボタンにタップジェスチャーを追加
+        self.twitterIcon.addGestureRecognizer(alertGesture)
+        self.instagramIcon.addGestureRecognizer(alertGesture)
+        self.facebookIcon.addGestureRecognizer(alertGesture)
         
     }
     
@@ -90,64 +101,78 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    //マイページを編集
+    //themeImageViewのタップジェスチャー
+    @objc @IBAction func themeImageAction(_ sender: UITapGestureRecognizer) {
+        identification_imagePicker = "theme"
+        album()
+    }
+    
+    //IconImageViewのタップジェスチャー
+    @IBAction func iconImageAction(_ sender: UITapGestureRecognizer) {
+        identification_imagePicker = "icon"
+        album()
+    }
+    
+    //twitterのタップジェスチャー
+    @IBAction func twitterIconAction(_ sender: UITapGestureRecognizer) {
+        name_sns = "twitter"
+        alert_sns()
+    }
+    
+    //instagramのタップジェスチャー
+    @IBAction func instagramIconAction(_ sender: UITapGestureRecognizer) {
+        name_sns = "instagram"
+        alert_sns()
+    }
+    
+    //facebookのタップジェスチャー
+    @IBAction func facebookIconAction(_ sender: UITapGestureRecognizer) {
+        name_sns = "facebook"
+        alert_sns()
+    }
+    
+    
+    //"マイページを編集"ボタン
     @IBAction func editUserPage(_ sender: Any) {
+        //編集画面ではない時
+        if isEditMode == false {
+            //リンクカラーボタンを表示
+            linkcolorButton.isHidden = false
+            //imageViewをタップ可能にする
+            themeImage.isUserInteractionEnabled = true
+            iconImage.isUserInteractionEnabled = true
+            //３つのSNSをタップ可能にする
+            twitterIcon.isUserInteractionEnabled = true
+            instagramIcon.isUserInteractionEnabled = true
+            facebookIcon.isUserInteractionEnabled = true
+            //profileを編集可能に
+            profileLabel.isEditable = true
+            //tableView
+            //"マイページを保存する"の表示を変更
+            editUserPage.setTitle("マイページを保存", for: .normal)
+            isEditMode = true
+        //編集画面の時
+        } else {
+            linkcolorButton.isHidden = true
+            themeImage.isUserInteractionEnabled = false
+            iconImage.isUserInteractionEnabled = false
+            //３つのSNSリンクボタンにタップジェスチャーを追加
+            twitterIcon.isUserInteractionEnabled = false
+            instagramIcon.isUserInteractionEnabled = false
+            facebookIcon.isUserInteractionEnabled = false
+            profileLabel.isEditable = false
+            editUserPage.setTitle("マイページを編集", for: .normal)
+            isEditMode = false
+        }
         
-        //リンクカラーボタンを表示
-        linkcolorButton.isHidden = false
-        //２つのImageViewにタップジェスチャーを追加
-        themeImage.isUserInteractionEnabled = true
-        iconImage.isUserInteractionEnabled = true
-        self.themeImage.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(UserPageViewController.album(_:))))
-        self.iconImage.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(UserPageViewController.album(_:))))
-        //３つのSNSリンクボタンにタップジェスチャーを追加
-        
-        //profileを編集可能に
-        profileLabel.isEditable = true
-        //tableView
     }
     
     //リンクカラーを設定
     @IBAction func linkcolorButton(_ sender: Any) {
     }
     
-    //どのimageをタップしたかを検出
-//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-//        print("1")
-//        //Viewタップしたか
-//        guard touch.view != nil else {
-//            print("tap error")
-//            return false
-//        }
-//        print("2")
-//        if touch.view!.viewWithTag(1) != nil {
-//            identification_imagePicker = "theme"
-//            return true
-//        } else if touch.view!.viewWithTag(2) != nil {
-//            identification_imagePicker = "icon"
-//            return true
-//        }
-//
-//        //themeImage,iconImageのどっちをタップした?
-////        switch touch.view?.viewWithTag() {
-////        case themeImage:
-////            identification_imagePicker = "theme"
-////            return true
-////        case iconImage:
-////            identification_imagePicker = "icon"
-////            return true
-////        default:
-////            break
-////        }
-//
-//        return false
-//    }
-    
-    
-    
-    //アルバムを起動
-    @objc func album(_ sender: UITapGestureRecognizer) {
-        print(1)
+    //アルバムを起動する
+    func album() {
         //SourceType.camera：カメラを指定
         let sourceType:UIImagePickerController.SourceType
             = UIImagePickerController.SourceType.photoLibrary
@@ -160,6 +185,46 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //アルバム画面を開く
             self.present(cameraPicker, animated: true, completion: nil)
         }
+    }
+    
+    //アラームを起動
+    func alert_sns() {
+        let alert = UIAlertController(title: "リンクを追加", message:  "\(name_sns)のURLを入力してください", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
+            //textFieldを配列に格納
+            guard let textfield:[UITextField] = alert.textFields else {return}
+            //配列からテキストを取り出す
+            for textField in textfield {
+                switch textField.tag {
+                case 1:
+                    switch self.name_sns {
+                    case "twitter":
+                        self.twitterURL = textField.text!
+                        print("" + self.twitterURL)
+                    case "instagram":
+                        self.instagramURL = textField.text!
+                        print("")
+                    case "facebook":
+                        self.facebookURL = textField.text!
+                        print("")
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+            }
+        }
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        alert.addTextField { (text:UITextField!) in
+            text.placeholder = "\(self.name_sns)のURL"
+            text.tag = 1
+        }
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
     }
     
     //アルバムで画像を選択したら
@@ -228,6 +293,11 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let ud = UserDefaults.standard
         ud.set(false, forKey: "LoginStatus")
         ud.synchronize()
+    }
+    
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        textView.resignFirstResponder()
+        return true
     }
     
 }
