@@ -32,7 +32,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     var objects = [Item]()
     
     //セルの色を格納
-    var cell_color:UIColor = UIColor.white
+    var cell_color:UIColor = UIColor.gray
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var themeImage: UIImageView!
@@ -48,11 +48,6 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //objectsを初期化
-        object.link = ""
-        object.title = "追加する"
-        objects.append(object)
         
         //リンクカラーボタンを非表示に
         linkcolorButton.isHidden = true
@@ -112,37 +107,28 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath) as! UserPageViewCell
         //背景色を初期化
-        cell.backgroundColor = UIColor.white
-//        cell.contentView.backgroundColor = UIColor.white
+        cell.linkImageView.backgroundColor = UIColor.white
         cell.textLabel?.textColor = UIColor.black
-        //マイページの時は非常時、編集モードなら表示する
-        if isEditMode == false && objects.count - 1 == indexPath.row {
-            print(1)
-            return cell
-            //isEditMode:true || objects.count -1 != indexPath.row
+        //追加するボタンの時
+        if objects[indexPath.row].title == "追加する" {
+            cell.linkImageView.backgroundColor = UIColor.blue
+            cell.textLabel?.textColor = UIColor.white
+        //他の要素の時
         } else {
-            if objects[indexPath.row].title == "追加する" {
-                print(2)
-                cell.backgroundColor = UIColor.blue
+            //URLの場合
+            if objects[indexPath.row].link != "" {
                 cell.textLabel?.textColor = UIColor.white
+                cell.linkImageView.backgroundColor = cell_color
+            //コメントの場合
             } else {
-                print(3)
-                //URLの場合
-                if objects[indexPath.row].link != "" {
-                    print(4)
-                    cell.contentView.backgroundColor = cell_color
-                    //コメントの場合
-                } else {
-                    print(5)
-                    cell.contentView.backgroundColor = UIColor.white
-                }
+                cell.linkImageView.backgroundColor = UIColor.white
             }
-            cell.textLabel?.text = objects[indexPath.row].title
-            cell.textLabel?.textAlignment = .center
-            return cell
         }
+        cell.textLabel?.text = objects[indexPath.row].title
+        cell.textLabel?.textAlignment = .center
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -238,10 +224,54 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 //編集
                 let editAction = UIAlertAction(title: "編集", style: .default) { (action) in
-//                    let editAlert = UIAlertController(title: ", message: <#T##String?#>, preferredStyle: <#T##UIAlertController.Style#>)
+                    alert.dismiss(animated: true, completion: nil)
+                    let editAlert = UIAlertController(title: "編集する", message: nil, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        //textFieldを配列に格納
+                        guard let textfield:[UITextField] = editAlert.textFields else {return}
+                        //配列からテキストを取り出す
+                        for textField in textfield {
+                            switch textField.tag {
+                            case 1:
+                                //textFieldに入力した内容をobjectのtitleプロパティに追加
+                                self.objects[indexPath.row].link = textField.text!
+                            case 2:
+                                //textFieldに入力した内容をobjectのプロパティに追加
+                                self.objects[indexPath.row].title = textField.text!
+                            default: break
+                            }
+                        }
+                        editAlert.dismiss(animated: true, completion: nil)
+                        //更新
+                        tableView.reloadData()
+                    })
+                    let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
+                        editAlert.dismiss(animated: true, completion: nil)
+                    })
+                    //URLの場合
+                    if self.objects[indexPath.row].link != "" {
+                        //アラートにtextFieldを追加
+                        editAlert.addTextField { (text:UITextField!) in
+                            text.placeholder = "URLリンク"
+                            text.tag = 1
+                        }
+                        editAlert.addTextField { (text:UITextField!) in
+                            text.placeholder = "URLタイトル"
+                            text.tag = 2
+                        }
+                    //コメントの場合
+                    } else {
+                        editAlert.addTextField { (text:UITextField!) in
+                            text.placeholder = "コメント"
+                            text.tag = 2
+                        }
+                    }
+                    editAlert.addAction(okAction)
+                    editAlert.addAction(cancelAction)
+                    self.present(editAlert, animated: true, completion: nil)
                 }
                 //削除
-                let deleteAction = UIAlertAction(title: "削除", style: .default) { (action) in
+                let deleteAction = UIAlertAction(title: "削除", style: .destructive) { (action) in
                     self.objects.remove(at: indexPath.row)
                     tableView.deleteRows(at: [indexPath], with: .fade)
                 }
@@ -250,7 +280,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     alert.dismiss(animated: true, completion: nil)
                     tableView.deselectRow(at: indexPath, animated: true)
                 }
-//                alert.addAction(editAction)
+                alert.addAction(editAction)
                 alert.addAction(deleteAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true, completion: nil)
@@ -296,6 +326,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     @IBAction func editUserPage(_ sender: Any) {
         //編集画面ではない時
         if isEditMode == false {
+            //"追加する"を追加
+            //objectsを初期化
+            let objectItem = Item()
+            objectItem.link = ""
+            objectItem.title = "追加する"
+            objects.append(objectItem)
             //リンクカラーボタンを表示
             linkcolorButton.isHidden = false
             //imageViewをタップ可能にする
@@ -315,6 +351,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             tableView.reloadData()
         //編集画面の時
         } else {
+            objects.remove(at: objects.count - 1)
             linkcolorButton.isHidden = true
             themeImage.isUserInteractionEnabled = false
             iconImage.isUserInteractionEnabled = false
