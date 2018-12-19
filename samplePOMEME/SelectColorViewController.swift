@@ -27,19 +27,13 @@ class SelectColorViewController: UIViewController,UITableViewDelegate,UITableVie
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let upvc = storyboard?.instantiateViewController(withIdentifier: "userpageID") as! UserPageViewController
-//        upvc.cell_color = color[indexPath.row]
-        
         let nav = self.navigationController
         // 一つ前のViewControllerを取得する
         let upvc = nav?.viewControllers[0] as! UserPageViewController
         // 値を渡す
         upvc.recieve(color: color[indexPath.row])
-        
         // popする
         _ = navigationController?.popViewController(animated: true)
-        
-//        self.navigationController?.popViewController(animated: true)
     }
     
 }

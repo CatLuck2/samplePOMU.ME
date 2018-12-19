@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		12CFAAAD20924D4CD252D7FF /* Pods_samplePOMEME.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 857E292F533980BF40EB3B3D /* Pods_samplePOMEME.framework */; };
 		D788B63821C9EC3200C5AE82 /* SelectColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D788B63721C9EC3200C5AE82 /* SelectColorViewController.swift */; };
+		D788B63A21CA1DA400C5AE82 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = D788B63921CA1DA400C5AE82 /* Item.swift */; };
 		D7957E9521C3492900F611F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7957E9421C3492900F611F3 /* AppDelegate.swift */; };
 		D7957E9721C3492900F611F3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7957E9621C3492900F611F3 /* ViewController.swift */; };
 		D7957E9A21C3492900F611F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7957E9821C3492900F611F3 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 /* Begin PBXFileReference section */
 		857E292F533980BF40EB3B3D /* Pods_samplePOMEME.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_samplePOMEME.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D788B63721C9EC3200C5AE82 /* SelectColorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectColorViewController.swift; sourceTree = "<group>"; };
+		D788B63921CA1DA400C5AE82 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		D7957E9121C3492900F611F3 /* samplePOMEME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = samplePOMEME.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7957E9421C3492900F611F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D7957E9621C3492900F611F3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				D7957E9421C3492900F611F3 /* AppDelegate.swift */,
+				D788B63921CA1DA400C5AE82 /* Item.swift */,
 				D7957E9621C3492900F611F3 /* ViewController.swift */,
 				D799A63121C7973F005DCE9D /* DetailViewController.swift */,
 				D7957EB221C34D3B00F611F3 /* UserPageViewController.swift */,
@@ -309,6 +312,7 @@
 				D799A62F21C765E5005DCE9D /* UserPageViewCell.swift in Sources */,
 				D7957E9721C3492900F611F3 /* ViewController.swift in Sources */,
 				D7957ECE21C3532300F611F3 /* TimeLineViewCell.swift in Sources */,
+				D788B63A21CA1DA400C5AE82 /* Item.swift in Sources */,
 				D7957EB121C34C9A00F611F3 /* SignINController.swift in Sources */,
 				D7957EB321C34D3B00F611F3 /* UserPageViewController.swift in Sources */,
 				D7957E9521C3492900F611F3 /* AppDelegate.swift in Sources */,

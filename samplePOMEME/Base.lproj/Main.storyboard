@@ -291,7 +291,7 @@
                         <outlet property="instagramIcon" destination="m8N-C4-mf0" id="DEE-Xd-5xa"/>
                         <outlet property="linkcolorButton" destination="Gzi-uq-eMX" id="0Hr-vy-Q3v"/>
                         <outlet property="profileLabel" destination="8fm-3B-UjY" id="DQv-r3-VMZ"/>
-                        <outlet property="tableView" destination="lEB-kf-4x7" id="USw-5N-dKV"/>
+                        <outlet property="tableView" destination="lEB-kf-4x7" id="B6G-7g-JYm"/>
                         <outlet property="themeImage" destination="vl5-PN-sac" id="NUq-7w-FSh"/>
                         <outlet property="twitterIcon" destination="Se8-k1-Eb4" id="9AV-MB-eEC"/>
                         <outlet property="userID" destination="Hw4-8r-m4I" id="qrJ-kW-wMb"/>

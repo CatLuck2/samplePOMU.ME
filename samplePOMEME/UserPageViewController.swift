@@ -26,8 +26,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //タップしたSNSを識別する
     var name_sns = ""
     
-    //セルの内容を格納する配列
-    var cellArray:[String:Any] = ["追加す":"+"]
+    //URLとコメントを持つItemクラス
+    var object = Item()
+    //Itemクラスを格納する配列
+    var objects = [Item]()
     
     //セルの色を格納
     var cell_color:UIColor = UIColor.white
@@ -46,6 +48,11 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //objectsを初期化
+        object.link = ""
+        object.title = "追加する"
+        objects.append(object)
         
         //リンクカラーボタンを非表示に
         linkcolorButton.isHidden = true
@@ -101,50 +108,115 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellArray.count
+        return objects.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath)
-        if cellArray[indexPath.row] == "追加する" {
-            cell.contentView.backgroundColor = UIColor.blue
+        //マイページの時は非常時、編集モードなら表示する
+        if isEditMode == false && objects.count - 1 == indexPath.row {
+            return cell
         } else {
-            cell.contentView.backgroundColor = cell_color
+            if objects[indexPath.row].title == "追加する" {
+                cell.contentView.backgroundColor = UIColor.blue
+            } else {
+                //URLの場合
+                if objects[indexPath.row].link != "" {
+                    cell.contentView.backgroundColor = cell_color
+                    cell.backgroundColor = cell_color
+                    //コメントの場合
+                } else {
+                    cell.contentView.backgroundColor = UIColor.white
+                }
+            }
+            cell.textLabel?.text = objects[indexPath.row].title
+            cell.textLabel?.textAlignment = .center
+            return cell
         }
-        cell.textLabel?.text = cellArray[indexPath.row]
-        cell.textLabel?.textAlignment = .center
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //編集画面なら
         if isEditMode == true {
             //"追加する"をタップしたら
-            if indexPath.row == cellArray.count - 1 {
+            if indexPath.row == objects.count - 1 {
                 let alert = UIAlertController(title: "アイテムを追加", message: "どちらを追加しますか?", preferredStyle: .alert)
                 let commentAction = UIAlertAction(title: "コメント", style: .default) { (action) in
                     alert.dismiss(animated: true, completion: nil)
                     let commentAlert = UIAlertController(title: "コメントを追加", message: "コメントを入力してください", preferredStyle: .alert)
-                    //                let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                    //                    <#code#>
-                    //                })
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        //textFieldを配列に格納
+                        guard let textfield:[UITextField] = commentAlert.textFields else {return}
+                        //配列からテキストを取り出す
+                        for textField in textfield {
+                            switch textField.tag {
+                            case 1:
+                                //Itemクラスを宣言
+                                let objectItem = Item()
+                                //textFieldに入力した内容をobjectのcommentプロパティに追加
+                                objectItem.title = textField.text!
+                                //objectsにobjectを追加
+                                self.objects.insert(objectItem, at: 0)
+                            default: break
+                            }
+                        }
+                        commentAlert.dismiss(animated: true, completion: nil)
+                        //更新
+                        tableView.reloadData()
+                    })
                     let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
                         commentAlert.dismiss(animated: true, completion: nil)
+                        tableView.deselectRow(at: indexPath, animated: true)
                     })
-                    //                commentAlert.addAction(okAction)
+                    //アラートにtextFieldを追加
+                    commentAlert.addTextField { (text:UITextField!) in
+                        text.placeholder = "コメント"
+                        text.tag = 1
+                    }
+                    commentAlert.addAction(okAction)
                     commentAlert.addAction(cancelAction)
                     self.present(commentAlert, animated: true, completion: nil)
                 }
                 let linkAction = UIAlertAction(title: "リンク", style: .default) { (action) in
                     alert.dismiss(animated: true, completion: nil)
                     let linkAlert = UIAlertController(title: "リンクを追加", message: "タイトルとURLを入力してください", preferredStyle: .alert)
-                    //                let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                    //                    <#code#>
-                    //                })
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        //Itemクラスを宣言
+                        let objectItem = Item()
+                        //textFieldを配列に格納
+                        guard let textfield:[UITextField] = linkAlert.textFields else {return}
+                        //配列からテキストを取り出す
+                        for textField in textfield {
+                            switch textField.tag {
+                            case 1:
+                                //textFieldに入力した内容をobjectのtitleプロパティに追加
+                                objectItem.link = textField.text!
+                            case 2:
+                                //textFieldに入力した内容をobjectのプロパティに追加
+                                objectItem.title = textField.text!
+                            default: break
+                            }
+                        }
+                        //objectsにobjectを追加
+                        self.objects.insert(objectItem, at: 0)
+                        linkAlert.dismiss(animated: true, completion: nil)
+                        //更新
+                        tableView.reloadData()
+                    })
                     let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
                         linkAlert.dismiss(animated: true, completion: nil)
+                        tableView.deselectRow(at: indexPath, animated: true)
                     })
-                    //                linkAlert.addAction(okAction)
+                    //アラートにtextFieldを追加
+                    linkAlert.addTextField { (text:UITextField!) in
+                        text.placeholder = "URLリンク"
+                        text.tag = 1
+                    }
+                    linkAlert.addTextField { (text:UITextField!) in
+                        text.placeholder = "URLタイトル"
+                        text.tag = 2
+                    }
+                    linkAlert.addAction(okAction)
                     linkAlert.addAction(cancelAction)
                     self.present(linkAlert, animated: true, completion: nil)
                 }
@@ -156,18 +228,19 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 //編集
                 let editAction = UIAlertAction(title: "編集", style: .default) { (action) in
-                    let editAlert = UIAlertController(title: ", message: <#T##String?#>, preferredStyle: <#T##UIAlertController.Style#>)
+//                    let editAlert = UIAlertController(title: ", message: <#T##String?#>, preferredStyle: <#T##UIAlertController.Style#>)
                 }
                 //削除
                 let deleteAction = UIAlertAction(title: "削除", style: .default) { (action) in
-                    self.cellArray.remove(at: indexPath.row)
+                    self.objects.remove(at: indexPath.row)
                     tableView.deleteRows(at: [indexPath], with: .fade)
                 }
                 //キャンセル
                 let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
                     alert.dismiss(animated: true, completion: nil)
+                    tableView.deselectRow(at: indexPath, animated: true)
                 }
-                alert.addAction(editAction)
+//                alert.addAction(editAction)
                 alert.addAction(deleteAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true, completion: nil)
@@ -228,6 +301,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //"マイページを保存する"の表示を変更
             editUserPage.setTitle("マイページを保存", for: .normal)
             isEditMode = true
+            //更新
+            tableView.reloadData()
         //編集画面の時
         } else {
             linkcolorButton.isHidden = true
@@ -240,6 +315,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             profileLabel.isEditable = false
             editUserPage.setTitle("マイページを編集", for: .normal)
             isEditMode = false
+            //更新
+            tableView.reloadData()
         }
         
     }
@@ -281,13 +358,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     switch self.name_sns {
                     case "twitter":
                         self.twitterURL = textField.text!
-                        print("" + self.twitterURL)
                     case "instagram":
                         self.instagramURL = textField.text!
-                        print("")
                     case "facebook":
                         self.facebookURL = textField.text!
-                        print("")
                     default:
                         break
                     }
