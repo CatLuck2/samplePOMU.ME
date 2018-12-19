@@ -20,13 +20,17 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     var facebookURL = ""
     
     //編集画面かを識別する
+    //true:編集画面,false:マイページ
     var isEditMode = false
     
     //タップしたSNSを識別する
     var name_sns = ""
     
     //セルの内容を格納する配列
-    let cellArray = ["1","2","3","4","5","1","2","3","4","5","1","2"]
+    var cellArray:[String:Any] = ["追加す":"+"]
+    
+    //セルの色を格納
+    var cell_color:UIColor = UIColor.white
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var themeImage: UIImageView!
@@ -38,6 +42,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     @IBOutlet weak var instagramIcon: UIImageView!
     @IBOutlet weak var facebookIcon: UIImageView!
     @IBOutlet weak var editUserPage: UIButton!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,18 +53,19 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         //プロフィール文のデリゲート
         profileLabel.delegate = self
 
-        //角丸
+        //アイコン
         iconImage.layer.cornerRadius = 50
-        //枠線
         iconImage.layer.borderWidth = 0.5
-        //調整
         iconImage.layer.masksToBounds = true
+        //Twitterアイコン
         twitterIcon.layer.cornerRadius = 40
         twitterIcon.layer.borderWidth = 0.5
         twitterIcon.layer.masksToBounds = true
+        //instagramアイコン
         instagramIcon.layer.cornerRadius = 40
         instagramIcon.layer.borderWidth = 0.5
         instagramIcon.layer.masksToBounds = true
+        //facebookアイコン
         facebookIcon.layer.cornerRadius = 40
         facebookIcon.layer.borderWidth = 0.5
         facebookIcon.layer.masksToBounds = true
@@ -87,18 +94,88 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //更新
+        tableView.reloadData()
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath)
+        if cellArray[indexPath.row] == "追加する" {
+            cell.contentView.backgroundColor = UIColor.blue
+        } else {
+            cell.contentView.backgroundColor = cell_color
+        }
         cell.textLabel?.text = cellArray[indexPath.row]
+        cell.textLabel?.textAlignment = .center
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        //編集画面なら
+        if isEditMode == true {
+            //"追加する"をタップしたら
+            if indexPath.row == cellArray.count - 1 {
+                let alert = UIAlertController(title: "アイテムを追加", message: "どちらを追加しますか?", preferredStyle: .alert)
+                let commentAction = UIAlertAction(title: "コメント", style: .default) { (action) in
+                    alert.dismiss(animated: true, completion: nil)
+                    let commentAlert = UIAlertController(title: "コメントを追加", message: "コメントを入力してください", preferredStyle: .alert)
+                    //                let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                    //                    <#code#>
+                    //                })
+                    let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
+                        commentAlert.dismiss(animated: true, completion: nil)
+                    })
+                    //                commentAlert.addAction(okAction)
+                    commentAlert.addAction(cancelAction)
+                    self.present(commentAlert, animated: true, completion: nil)
+                }
+                let linkAction = UIAlertAction(title: "リンク", style: .default) { (action) in
+                    alert.dismiss(animated: true, completion: nil)
+                    let linkAlert = UIAlertController(title: "リンクを追加", message: "タイトルとURLを入力してください", preferredStyle: .alert)
+                    //                let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                    //                    <#code#>
+                    //                })
+                    let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
+                        linkAlert.dismiss(animated: true, completion: nil)
+                    })
+                    //                linkAlert.addAction(okAction)
+                    linkAlert.addAction(cancelAction)
+                    self.present(linkAlert, animated: true, completion: nil)
+                }
+                alert.addAction(commentAction)
+                alert.addAction(linkAction)
+                self.present(alert, animated: true, completion: nil)
+            //既に追加された要素をタップしたら
+            } else {
+                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                //編集
+                let editAction = UIAlertAction(title: "編集", style: .default) { (action) in
+                    let editAlert = UIAlertController(title: ", message: <#T##String?#>, preferredStyle: <#T##UIAlertController.Style#>)
+                }
+                //削除
+                let deleteAction = UIAlertAction(title: "削除", style: .default) { (action) in
+                    self.cellArray.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                }
+                //キャンセル
+                let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
+                    alert.dismiss(animated: true, completion: nil)
+                }
+                alert.addAction(editAction)
+                alert.addAction(deleteAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+        //編集画面でないなら
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     //themeImageViewのタップジェスチャー
@@ -167,8 +244,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
     }
     
-    //リンクカラーを設定
-    @IBAction func linkcolorButton(_ sender: Any) {
+    //SelectColorViewControllerで選択した色を取得
+    func recieve(color: UIColor) {
+        //取得
+        self.cell_color = color
+        //tableViewを更新
+        tableView.reloadData()
     }
     
     //アルバムを起動する
@@ -248,10 +329,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
     }
     
-    
     //メニューボタン
     @IBAction func menu(_ sender: Any) {
         let alert = UIAlertController(title: "メニュー", message:  nil, preferredStyle: .alert)
+        //ログアウト
         let logoutAction = UIAlertAction(title: "ログアウト", style: .default) { (action) in
             NCMBUser.logOutInBackground({ (error) in
                 if error != nil {
@@ -262,6 +343,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 }
             })
         }
+        //退会
         let deleteAction = UIAlertAction(title: "退会", style: .destructive) { (action) in
             let user = NCMBUser.current()
             user?.deleteInBackground({ (error) in
@@ -295,6 +377,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         ud.synchronize()
     }
     
+    //キーボードを閉じる
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         textView.resignFirstResponder()
         return true

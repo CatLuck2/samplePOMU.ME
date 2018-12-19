@@ -157,7 +157,7 @@
         <!--マイページ-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="UserPageViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="userpageID" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="UserPageViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1300"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -238,7 +238,7 @@
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <state key="normal" title="リンクカラーを設定"/>
                                                 <connections>
-                                                    <action selector="linkcolorButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hYe-dd-Zxe"/>
+                                                    <segue destination="kHy-sA-1bN" kind="show" id="y0R-gI-Gke"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fp-0O-dUW">
@@ -276,6 +276,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="マイページ" id="WW3-nn-b0y">
+                        <barButtonItem key="backBarButtonItem" title="戻る" id="8BU-Lk-F49"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="Ytp-qT-afj">
                             <connections>
                                 <action selector="menu:" destination="BYZ-38-t0r" id="HEp-RF-KK0"/>
@@ -324,6 +325,46 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1772" y="420.98950524737637"/>
+        </scene>
+        <!--リンクカラーを選択-->
+        <scene sceneID="joz-40-W7K">
+            <objects>
+                <viewController id="kHy-sA-1bN" customClass="SelectColorViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="P9O-9D-O2p">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dzl-HD-wrM">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="selectcell" id="V6L-vA-gMz">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="V6L-vA-gMz" id="YK4-R4-WZY">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="kHy-sA-1bN" id="hDU-kr-yI3"/>
+                                    <outlet property="delegate" destination="kHy-sA-1bN" id="vEu-qd-JYO"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="PAc-F8-d9G"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="リンクカラーを選択" id="nFe-H3-qnS"/>
+                    <connections>
+                        <outlet property="tableView" destination="dzl-HD-wrM" id="e3T-x8-IVA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pGG-Xc-SgP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2612" y="128.18590704647679"/>
         </scene>
         <!--お問い合わせ-->
         <scene sceneID="Jal-H9-By7">
