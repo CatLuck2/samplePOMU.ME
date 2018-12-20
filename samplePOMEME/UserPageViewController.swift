@@ -123,34 +123,56 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         //NCMBからユーザー情報を取得
         let user = NCMBUser.current()
-        profileLabel.text = user?.object(forKey: "Profile") as! String
-        userID.text = "@" + (user?.userName)!
-        twitterURL = user?.object(forKey: "TwitterURL") as! String
-        instagramURL = user?.object(forKey: "InstagramURL") as! String
-        facebookURL = user?.object(forKey: "FacebookURL") as! String
-//        itemColor = UIColor(user?.object(forKey: "ItemColor")) as! String
         
-        //NCMBから画像を取得
-        let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
-        let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
-        //テーマ画像を取得
-        readData_theme.getDataInBackground { (data, error) in
-            if error != nil {
-                print(error)
+        if user?.object(forKey: "Profile") != nil {
+            profileLabel.text = user?.object(forKey: "Profile") as! String
+            userID.text = "@" + (user?.userName)!
+            
+            //SNSのURLを取得
+            twitterURL = user?.object(forKey: "TwitterURL") as! String
+            if twitterURL != "" {
+                twitterIcon.alpha = 1.0
             } else {
-                self.themeImage.image = UIImage(data: data!)
+                twitterIcon.alpha = 0.5
             }
-        }
-        //アイコン画像を取得
-        readData_icon.getDataInBackground { (data, error) in
-            if error != nil {
-                print(error)
+            instagramURL = user?.object(forKey: "InstagramURL") as! String
+            if instagramURL != "" {
+                instagramIcon.alpha = 1.0
             } else {
-                self.iconImage.image = UIImage(data: data!)
+                instagramIcon.alpha = 0.5
             }
+            facebookURL = user?.object(forKey: "FacebookURL") as! String
+            if facebookURL != "" {
+                facebookIcon.alpha = 1.0
+            } else {
+                facebookIcon.alpha = 0.5
+            }
+            
+            //NCMBから画像を取得
+            let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+            let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+            //テーマ画像を取得
+            readData_theme.getDataInBackground { (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    self.themeImage.image = UIImage(data: data!)
+                }
+            }
+            //アイコン画像を取得
+            readData_icon.getDataInBackground { (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    self.iconImage.image = UIImage(data: data!)
+                }
+            }
+            //更新
+            tableView.reloadData()
+        } else {
+            
         }
-        //更新
-        tableView.reloadData()
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -428,19 +450,42 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             isEditMode = false
             //更新
             self.tableView.reloadData()
+            //NCMBに画像を保存
+            //画像(file)
+            let themeImageData = UIImage.pngData(self.themeImage.image!)
+            let iconImageData = UIImage.pngData(self.iconImage.image!)
+            let themeImageFile = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: themeImageData()) as! NCMBFile
+            let iconImageFile = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: iconImageData()) as! NCMBFile
+            //テーマ画像を保存
+            themeImageFile.saveInBackground({ (error) in
+                if error != nil {
+                    print(error)
+                } else {}
+            }) { (progress) in
+                print("theme:" + String(progress))
+            }
+            //アイコン画像を保存
+            iconImageFile.saveInBackground({ (error) in
+                if error != nil {
+                    print(error)
+                } else {}
+            }) { (progress) in
+                print("icon:" + String(progress))
+            }
             //NCMBにユーザー情報を保存
             let user = NCMBUser.current()
             user?.setObject(profileLabel.text, forKey: "Profile")
             user?.setObject(twitterURL, forKey: "TwitterURL")
             user?.setObject(instagramURL, forKey: "InstagramURL")
             user?.setObject(facebookURL, forKey: "FacebookURL")
-//            user?.setObject(objects, forKey: "Profile")
+            user?.setObject([["",""],["",""]], forKey: "Item")
             user?.setObject("\(itemColor)", forKey: "ItemColor")
             user?.saveInBackground({ (error) in
                 if error != nil {
                     print(error)
                 } else {}
             })
+            
         }
         
     }
@@ -518,8 +563,6 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //アルバムで画像を選択したら
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-         print("2")
-        
         //選択した画像を取得
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
         
@@ -536,37 +579,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             break
         }
         
-         print("3")
-        
-        //NCMBに保存
-        //画像(file)
-        let themeImageData = UIImage.pngData(self.themeImage.image!)
-        let iconImageData = UIImage.pngData(self.iconImage.image!)
-        let themeImageFile = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: themeImageData()) as! NCMBFile
-        let iconImageFile = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: iconImageData()) as! NCMBFile
-        //テーマ画像を保存
-        themeImageFile.saveInBackground({ (error) in
-            if error != nil {
-                print(error)
-            } else {}
-        }) { (progress) in
-            print("theme:" + String(progress))
-        }
-        //アイコン画像を保存
-        iconImageFile.saveInBackground({ (error) in
-            if error != nil {
-                print(error)
-            } else {}
-        }) { (progress) in
-            print("icon:" + String(progress))
-        }
-        
-         print("4")
-        
         //アルバム画面を閉じる
         picker.dismiss(animated: true, completion: nil)
-        
-         print("5")
         
     }
     

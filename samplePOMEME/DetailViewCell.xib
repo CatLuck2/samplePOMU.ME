@@ -32,6 +32,9 @@
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="backgroundImageView" destination="i1v-mt-uTj" id="xcY-St-aUB"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

@@ -9,10 +9,13 @@
 import UIKit
 
 class TimeLineViewCell: UITableViewCell {
-
+    
+    @IBOutlet weak var userName: UILabel!
+    @IBOutlet weak var iconImageView: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

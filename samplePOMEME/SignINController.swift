@@ -10,7 +10,7 @@ import UIKit
 import NCMB
 import SVProgressHUD
 
-class SignINController: UIViewController {
+class SignINController: UIViewController,UITextFieldDelegate {
     
     @IBOutlet weak var userName: UITextField!
     @IBOutlet weak var passWord: UITextField!
@@ -73,6 +73,16 @@ class SignINController: UIViewController {
         }
         alert.addAction(okAction)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        userName.resignFirstResponder()
+        passWord.resignFirstResponder()
     }
 
 }

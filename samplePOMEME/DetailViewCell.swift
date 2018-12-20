@@ -10,9 +10,13 @@ import UIKit
 
 class DetailViewCell: UITableViewCell {
 
+    @IBOutlet weak var backgroundImageView: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        backgroundImageView.layer.cornerRadius = 20
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -27,35 +27,71 @@
  ・アイテムの色を取得できない
     ・UIColorをStringに変換できても、StringをUIColorに変換できない
  
+ ・NCMBからNCMBUserを取得できない
  
  */
 
 import UIKit
 import NCMB
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate {
     
+    //NCMBUser配列の宣言
+    var users = [NCMBUser]()
+    
+    //検索バーの宣言
+    var searchBar: UISearchBar!
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setSearchBar()
+        loadUsers(searchText: nil)
+        
         tableView.register(UINib(nibName: "TimeLineViewCell", bundle: nil), forCellReuseIdentifier: "timelinecell")
+        //tableViewのセルの高さを設定
+        tableView.estimatedRowHeight = 80
+        tableView.rowHeight = 80
+        tableView.tableFooterView = UIView()
+        print("users.count:" + "\(users.count)")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadUsers(searchText: nil)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "timelinecell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "timelinecell", for: indexPath) as! TimeLineViewCell
+        
+        //ユーザー名を取得
+        cell.userName.text = "@" + (users[indexPath.row].userName)!
+        //アイコン画像を取得
+        let readData_icon = NCMBFile.file(withName: "icon " + users[indexPath.row].objectId, data: nil) as! NCMBFile
+        readData_icon.getDataInBackground { (data, error) in
+            if error != nil {
+                print(error)
+            } else {
+                cell.iconImageView.image = UIImage(data: data!)
+            }
+        }
+        cell.iconImageView.layer.cornerRadius = cell.iconImageView.bounds.width / 2.0
+        cell.iconImageView.layer.masksToBounds = true
+        
+        
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         performSegue(withIdentifier: "godetail", sender: nil)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     //メニューボタン
@@ -89,7 +125,75 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.present(alert, animated: true, completion: nil)
     }
     
-    //同期する際の処理
+    //検索バーの設置
+    func setSearchBar() {
+        // NavigationBarにSearchBarをセット
+        if let navigationBarFrame = self.navigationController?.navigationBar.bounds {
+            //NavigationBarに適したサイズの検索バーを設置
+            let searchBar: UISearchBar = UISearchBar(frame: navigationBarFrame)
+            //デリゲート
+            searchBar.delegate = self
+            //プレースホルダー
+            searchBar.placeholder = "ユーザーを検索"
+            //検索バーのスタイル
+            searchBar.autocapitalizationType = UITextAutocapitalizationType.none
+            //NavigationTitleが置かれるView?
+            navigationItem.titleView = searchBar
+            //titleViewのサイズ
+            navigationItem.titleView?.frame = searchBar.frame
+            //NavigationBarにセット
+            self.searchBar = searchBar
+        }
+    }
+    
+    //検索バーで入力する時
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true
+    }
+    
+    //検索バーのキャンセルがタップされた時
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        loadUsers(searchText: nil)
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
+    }
+    
+    //検索バーでEnterが押された時
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        loadUsers(searchText: searchBar.text)
+    }
+
+    //ユーザーを読み込む
+    func loadUsers(searchText: String?) {
+        let query = NCMBUser.query()
+        // 自分を除外
+        query?.whereKey("objectId", notEqualTo: false)
+        
+        // 退会済みアカウントを除外
+//        query?.whereKey("active", notEqualTo: false)
+        
+        // 検索ワードがある場合
+        if let text = searchText {
+//            query?.whereKey("userName", equalTo: text)
+        }
+        
+        // 新着ユーザー50人だけ拾う
+        query?.limit = 50
+        // 降順にソート
+//        query?.order(byDescending: "createDate")
+        
+        query?.findObjectsInBackground({ (result, error) in
+            if error != nil {
+                print(error)
+            } else {
+                // 取得した新着50件のユーザーを格納
+                self.users = result as! [NCMBUser]
+            }
+        })
+    }
+    
+    //ログアウトする際の処理
     func syncronize() {
         //storyboardを宣言
         let storyboard = UIStoryboard(name: "SignIN", bundle: Bundle.main)
