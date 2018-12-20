@@ -39,6 +39,7 @@
 		D799A63221C7973F005DCE9D /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D799A63121C7973F005DCE9D /* DetailViewController.swift */; };
 		D799A63521C798BA005DCE9D /* DetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D799A63321C798BA005DCE9D /* DetailViewCell.swift */; };
 		D799A63621C798BA005DCE9D /* DetailViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D799A63421C798BA005DCE9D /* DetailViewCell.xib */; };
+		D79CFB0C21CB47500076DBA2 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79CFB0B21CB47500076DBA2 /* UserData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		D799A63121C7973F005DCE9D /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		D799A63321C798BA005DCE9D /* DetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewCell.swift; sourceTree = "<group>"; };
 		D799A63421C798BA005DCE9D /* DetailViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailViewCell.xib; sourceTree = "<group>"; };
+		D79CFB0B21CB47500076DBA2 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		F21D86AEC75D37695A4F42CF /* Pods-samplePOMEME.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samplePOMEME.debug.xcconfig"; path = "Pods/Target Support Files/Pods-samplePOMEME/Pods-samplePOMEME.debug.xcconfig"; sourceTree = "<group>"; };
 		F741D39B9C2F3CEE4D0A9207 /* Pods-samplePOMEME.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-samplePOMEME.release.xcconfig"; path = "Pods/Target Support Files/Pods-samplePOMEME/Pods-samplePOMEME.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +134,7 @@
 			children = (
 				D7957E9421C3492900F611F3 /* AppDelegate.swift */,
 				D788B63921CA1DA400C5AE82 /* Item.swift */,
+				D79CFB0B21CB47500076DBA2 /* UserData.swift */,
 				D7957E9621C3492900F611F3 /* ViewController.swift */,
 				D799A63121C7973F005DCE9D /* DetailViewController.swift */,
 				D7957EB221C34D3B00F611F3 /* UserPageViewController.swift */,
@@ -308,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D79CFB0C21CB47500076DBA2 /* UserData.swift in Sources */,
 				D799A63221C7973F005DCE9D /* DetailViewController.swift in Sources */,
 				D799A62F21C765E5005DCE9D /* UserPageViewCell.swift in Sources */,
 				D7957E9721C3492900F611F3 /* ViewController.swift in Sources */,

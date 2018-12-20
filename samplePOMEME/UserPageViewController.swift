@@ -8,6 +8,8 @@
 
 import UIKit
 import NCMB
+import NYXImagesKit
+import UITextView_Placeholder
 
 class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate  {
     
@@ -96,8 +98,30 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        print("1")
+        
+        //NCMBから画像を取得
+        let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+        let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+        //テーマ画像を取得
+        readData_theme.getDataInBackground { (data, error) in
+            if error != nil {
+                print(error)
+            } else {
+                self.themeImage.image = UIImage(data: data!)
+            }
+        }
+        //アイコン画像を取得
+        readData_icon.getDataInBackground { (data, error) in
+            if error != nil {
+                print(error)
+            } else {
+                self.iconImage.image = UIImage(data: data!)
+            }
+        }
         //更新
         tableView.reloadData()
     }
@@ -126,7 +150,9 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 cell.linkImageView.backgroundColor = UIColor.white
             }
         }
+        //セルにtitlaプロパティを代入
         cell.textLabel?.text = objects[indexPath.row].title
+        //セルのテキストを中央揃いにする
         cell.textLabel?.textAlignment = .center
         return cell
     }
@@ -219,7 +245,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 alert.addAction(commentAction)
                 alert.addAction(linkAction)
                 self.present(alert, animated: true, completion: nil)
-            //既に追加された要素をタップしたら
+            //リンクやコメントをタップしたら
             } else {
                 let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 //編集
@@ -326,8 +352,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     @IBAction func editUserPage(_ sender: Any) {
         //編集画面ではない時
         if isEditMode == false {
-            //"追加する"を追加
-            //objectsを初期化
+            //"追加する"を表示
             let objectItem = Item()
             objectItem.link = ""
             objectItem.title = "追加する"
@@ -337,7 +362,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //imageViewをタップ可能にする
             themeImage.isUserInteractionEnabled = true
             iconImage.isUserInteractionEnabled = true
-            //３つのSNSをタップ可能にする
+            //３つのSNSボタンをタップ可能にする
             twitterIcon.isUserInteractionEnabled = true
             instagramIcon.isUserInteractionEnabled = true
             facebookIcon.isUserInteractionEnabled = true
@@ -363,7 +388,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             editUserPage.setTitle("マイページを編集", for: .normal)
             isEditMode = false
             //更新
-            tableView.reloadData()
+            self.tableView.reloadData()
         }
         
     }
@@ -392,7 +417,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         }
     }
     
-    //アラームを起動
+    //SNS用のアラート
     func alert_sns() {
         let alert = UIAlertController(title: "リンクを追加", message:  "\(name_sns)のURLを入力してください", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
@@ -432,21 +457,55 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //アルバムで画像を選択したら
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
+         print("2")
+        
         //選択した画像を取得
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        
+        //画像を圧縮
+        let resizedImage = image.scale(byFactor: 0.4)
         
         //identification_imagePickerの値で分岐
         switch identification_imagePicker {
         case "theme":
-            themeImage.image = image
+            themeImage.image = resizedImage
         case "icon":
-            iconImage.image = image
+            iconImage.image = resizedImage
         default:
             break
         }
         
+         print("3")
+        
+        //NCMBに保存
+        //画像(file)
+        let themeImageData = UIImage.pngData(self.themeImage.image!)
+        let iconImageData = UIImage.pngData(self.iconImage.image!)
+        let themeImageFile = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: themeImageData()) as! NCMBFile
+        let iconImageFile = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: iconImageData()) as! NCMBFile
+        //テーマ画像を保存
+        themeImageFile.saveInBackground({ (error) in
+            if error != nil {
+                print(error)
+            } else {}
+        }) { (progress) in
+            print("theme:" + String(progress))
+        }
+        //アイコン画像を保存
+        iconImageFile.saveInBackground({ (error) in
+            if error != nil {
+                print(error)
+            } else {}
+        }) { (progress) in
+            print("icon:" + String(progress))
+        }
+        
+         print("4")
+        
         //アルバム画面を閉じる
         picker.dismiss(animated: true, completion: nil)
+        
+         print("5")
         
     }
     
@@ -485,7 +544,20 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         self.present(alert, animated: true, completion: nil)
     }
     
-    //同期する際の処理
+    //画像が回転しないように加工
+    func translate(from image: UIImage) -> UIImage? {
+        guard let cgImage1 = image.cgImage else { return nil }
+        let ciImage = CIImage(cgImage: cgImage1)
+        let ciContext = CIContext(options: nil)
+        
+        /* CIImageを使用した画像編集処理 */
+        
+        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
+        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
+        return result
+    }
+    
+    //ログアウトする際の処理
     func syncronize() {
         //storyboardを宣言
         let storyboard = UIStoryboard(name: "SignIN", bundle: Bundle.main)
