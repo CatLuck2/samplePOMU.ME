@@ -34,7 +34,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     var objects = [Item]()
     
     //セルの色を格納
-    var cell_color:UIColor = UIColor.gray
+    var itemColor:UIColor = UIColor.gray
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var themeImage: UIImageView!
@@ -96,12 +96,39 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         self.instagramIcon.addGestureRecognizer(alertGesture)
         self.facebookIcon.addGestureRecognizer(alertGesture)
         
+        //NCMBから画像を取得
+        let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+        let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+        //テーマ画像を取得
+        readData_theme.getDataInBackground { (data, error) in
+            if error != nil {
+                print(error)
+            } else {
+                self.themeImage.image = UIImage(data: data!)
+            }
+        }
+        //アイコン画像を取得
+        readData_icon.getDataInBackground { (data, error) in
+            if error != nil {
+                print(error)
+            } else {
+                self.iconImage.image = UIImage(data: data!)
+            }
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        print("1")
+        //NCMBからユーザー情報を取得
+        let user = NCMBUser.current()
+        profileLabel.text = user?.object(forKey: "Profile") as! String
+        userID.text = "@" + (user?.userName)!
+        twitterURL = user?.object(forKey: "TwitterURL") as! String
+        instagramURL = user?.object(forKey: "InstagramURL") as! String
+        facebookURL = user?.object(forKey: "FacebookURL") as! String
+//        itemColor = UIColor(user?.object(forKey: "ItemColor")) as! String
         
         //NCMBから画像を取得
         let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
@@ -144,7 +171,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //URLの場合
             if objects[indexPath.row].link != "" {
                 cell.textLabel?.textColor = UIColor.white
-                cell.linkImageView.backgroundColor = cell_color
+                cell.linkImageView.backgroundColor = itemColor
             //コメントの場合
             } else {
                 cell.linkImageView.backgroundColor = UIColor.white
@@ -168,24 +195,29 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     alert.dismiss(animated: true, completion: nil)
                     let commentAlert = UIAlertController(title: "コメントを追加", message: "コメントを入力してください", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        //Itemクラスを宣言
+                        let objectItem = Item()
                         //textFieldを配列に格納
                         guard let textfield:[UITextField] = commentAlert.textFields else {return}
                         //配列からテキストを取り出す
                         for textField in textfield {
                             switch textField.tag {
                             case 1:
-                                //Itemクラスを宣言
-                                let objectItem = Item()
                                 //textFieldに入力した内容をobjectのcommentプロパティに追加
                                 objectItem.title = textField.text!
-                                //objectsにobjectを追加
-                                self.objects.insert(objectItem, at: 0)
                             default: break
                             }
                         }
-                        commentAlert.dismiss(animated: true, completion: nil)
-                        //更新
-                        tableView.reloadData()
+                        if objectItem.title != "" {
+                            commentAlert.dismiss(animated: true, completion: nil)
+                            //objectsにobjectを追加
+                            self.objects.insert(objectItem, at: 0)
+                            //更新
+                            tableView.reloadData()
+                        } else {
+                            return
+                        }
+                        
                     })
                     let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
                         commentAlert.dismiss(animated: true, completion: nil)
@@ -219,11 +251,15 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                             default: break
                             }
                         }
-                        //objectsにobjectを追加
-                        self.objects.insert(objectItem, at: 0)
-                        linkAlert.dismiss(animated: true, completion: nil)
-                        //更新
-                        tableView.reloadData()
+                        if objectItem.link != "" && objectItem.title != "" {
+                            //objectsにobjectを追加
+                            self.objects.insert(objectItem, at: 0)
+                            linkAlert.dismiss(animated: true, completion: nil)
+                            //更新
+                            tableView.reloadData()
+                        } else {
+                            return
+                        }
                     })
                     let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: { (action) in
                         linkAlert.dismiss(animated: true, completion: nil)
@@ -278,16 +314,19 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     if self.objects[indexPath.row].link != "" {
                         //アラートにtextFieldを追加
                         editAlert.addTextField { (text:UITextField!) in
+                            text.text = self.objects[indexPath.row].link
                             text.placeholder = "URLリンク"
                             text.tag = 1
                         }
                         editAlert.addTextField { (text:UITextField!) in
+                            text.text = self.objects[indexPath.row].title
                             text.placeholder = "URLタイトル"
                             text.tag = 2
                         }
                     //コメントの場合
                     } else {
                         editAlert.addTextField { (text:UITextField!) in
+                            text.text = self.objects[indexPath.row].title
                             text.placeholder = "コメント"
                             text.tag = 2
                         }
@@ -389,6 +428,19 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             isEditMode = false
             //更新
             self.tableView.reloadData()
+            //NCMBにユーザー情報を保存
+            let user = NCMBUser.current()
+            user?.setObject(profileLabel.text, forKey: "Profile")
+            user?.setObject(twitterURL, forKey: "TwitterURL")
+            user?.setObject(instagramURL, forKey: "InstagramURL")
+            user?.setObject(facebookURL, forKey: "FacebookURL")
+//            user?.setObject(objects, forKey: "Profile")
+            user?.setObject("\(itemColor)", forKey: "ItemColor")
+            user?.saveInBackground({ (error) in
+                if error != nil {
+                    print(error)
+                } else {}
+            })
         }
         
     }
@@ -396,7 +448,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //SelectColorViewControllerで選択した色を取得
     func recieve(color: UIColor) {
         //取得
-        self.cell_color = color
+        self.itemColor = color
         //tableViewを更新
         tableView.reloadData()
     }
@@ -446,7 +498,16 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             alert.dismiss(animated: true, completion: nil)
         }
         alert.addTextField { (text:UITextField!) in
-            text.placeholder = "\(self.name_sns)のURL"
+            switch self.name_sns {
+            case "twitter":
+                text.text = self.twitterURL
+            case "instagram":
+                text.text = self.instagramURL
+            case "facebook":
+                text.text = self.facebookURL
+            default:
+                break
+            }
             text.tag = 1
         }
         alert.addAction(okAction)
@@ -545,17 +606,17 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     //画像が回転しないように加工
-    func translate(from image: UIImage) -> UIImage? {
-        guard let cgImage1 = image.cgImage else { return nil }
-        let ciImage = CIImage(cgImage: cgImage1)
-        let ciContext = CIContext(options: nil)
-        
-        /* CIImageを使用した画像編集処理 */
-        
-        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
-        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
-        return result
-    }
+//    func translate(from image: UIImage) -> UIImage? {
+//        guard let cgImage1 = image.cgImage else { return nil }
+//        let ciImage = CIImage(cgImage: cgImage1)
+//        let ciContext = CIContext(options: nil)
+//
+//        /* CIImageを使用した画像編集処理 */
+//
+//        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
+//        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
+//        return result
+//    }
     
     //ログアウトする際の処理
     func syncronize() {
