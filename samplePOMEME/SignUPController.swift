@@ -22,9 +22,21 @@ class SignUPController: UIViewController,UITextFieldDelegate {
     }
     
     @IBAction func createNewAccount(_ sender: Any) {
+        
         //ユーザー情報を保存
         //NCMBUserのインスタンス
         let user = NCMBUser()
+        
+        //入力されなかった場合
+        if userName.text == "" {
+            self.alert()
+            return
+        }
+        if passWord.text == "" {
+            self.alert()
+            return
+        }
+        
         //ユーザー名を登録
         user.userName = userName.text
         //パスワードを登録
@@ -47,19 +59,28 @@ class SignUPController: UIViewController,UITextFieldDelegate {
                         SVProgressHUD.dismiss(withDelay: 1.0)
                         return
                     } else {
-                        //ログイン状態をログイン中にする
-                        let ud = UserDefaults.standard
-                        ud.set(true, forKey: "LoginStatus")
-                        ud.synchronize()
-                        //Main.StoryBoardに遷移
-                        self.transitionView("Main", "tabbar", .crossDissolve)
+                        //ユーザーのアクセス権限設定
+                        let acl = NCMBACL()
+                        acl.setReadAccess(true, for: user)
+                        acl.setWriteAccess(true, for: user)
+                        user.acl = acl
+                        user.saveEventually({ (error) in
+                            if error != nil {
+                                SVProgressHUD.showError(withStatus: error!.localizedDescription)
+                            } else {
+                                //ログイン状態をログイン中にする
+                                let ud = UserDefaults.standard
+                                ud.set(true, forKey: "LoginStatus")
+                                ud.synchronize()
+                                //Main.StoryBoardに遷移
+                                self.transitionView("Main", "tabbar", .crossDissolve)
+                            }
+                        })
                     }
                 }
-            } else {
-                //入力されてない箇所があることを通知
-                self.alert()
             }
         }
+        
     }
     
     @IBAction func login(_ sender: Any) {

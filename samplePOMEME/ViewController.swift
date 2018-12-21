@@ -60,31 +60,35 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadUsers(searchText: nil)
+        
+        if users.count != 0 {
+            loadUsers(searchText: nil)
+        } else {}
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "timelinecell", for: indexPath) as! TimeLineViewCell
         
         //ユーザー名を取得
-        cell.userName.text = "@" + (users[indexPath.row].userName)!
-        //アイコン画像を取得
-        let readData_icon = NCMBFile.file(withName: "icon " + users[indexPath.row].objectId, data: nil) as! NCMBFile
-        readData_icon.getDataInBackground { (data, error) in
-            if error != nil {
-                print(error)
-            } else {
-                cell.iconImageView.image = UIImage(data: data!)
+        if users.count != 0 {
+            print("displaycell")
+            cell.userName.text = "@" + (users[indexPath.row].userName)!
+            //アイコン画像を取得
+            let readData_icon = NCMBFile.file(withName: "icon " + users[indexPath.row].objectId, data: nil) as! NCMBFile
+            readData_icon.getDataInBackground { (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    cell.iconImageView.image = UIImage(data: data!)
+                }
             }
-        }
+        } else {}
         cell.iconImageView.layer.cornerRadius = cell.iconImageView.bounds.width / 2.0
         cell.iconImageView.layer.masksToBounds = true
-        
-        
         
         return cell
     }
@@ -168,25 +172,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func loadUsers(searchText: String?) {
         let query = NCMBUser.query()
         // 自分を除外
-        query?.whereKey("objectId", notEqualTo: false)
-        
+        query?.whereKey("objectId", notEqualTo: NCMBUser.current()?.objectId)
+
         // 退会済みアカウントを除外
 //        query?.whereKey("active", notEqualTo: false)
-        
+
         // 検索ワードがある場合
         if let text = searchText {
-//            query?.whereKey("userName", equalTo: text)
+            query?.whereKey("userName", equalTo: text)
         }
-        
+
         // 新着ユーザー50人だけ拾う
         query?.limit = 50
         // 降順にソート
-//        query?.order(byDescending: "createDate")
-        
+        query?.order(byDescending: "createDate")
+
         query?.findObjectsInBackground({ (result, error) in
             if error != nil {
                 print(error)
             } else {
+                print("getData")
                 // 取得した新着50件のユーザーを格納
                 self.users = result as! [NCMBUser]
             }
