@@ -50,7 +50,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="M2D-IT-OVc" id="Toe-mR-BX7"/>
-                        <segue destination="Y5E-M8-ueB" kind="show" identifier="godetail" id="2Ir-jt-MBp"/>
+                        <segue destination="Y5E-M8-ueB" kind="show" identifier="" id="2Ir-jt-MBp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gt6-oB-Rfo" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -60,7 +60,7 @@
         <!--〇〇のマイページ-->
         <scene sceneID="HIc-en-WcM">
             <objects>
-                <viewController id="Y5E-M8-ueB" customClass="DetailViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="godetail" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y5E-M8-ueB" customClass="DetailViewController" customModule="samplePOMEME" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zU0-ta-GMJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

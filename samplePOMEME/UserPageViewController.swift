@@ -33,8 +33,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //Itemクラスを格納する配列
     var objects = [Item]()
     
+    //NCMBに保存するための
+    
     //セルの色を格納
     var itemColor:UIColor = UIColor.gray
+    //NCMBに保存用のセルカラー
+    var itemColor_Save = ""
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var themeImage: UIImageView!
@@ -96,61 +100,50 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         self.instagramIcon.addGestureRecognizer(alertGesture)
         self.facebookIcon.addGestureRecognizer(alertGesture)
         
-        //NCMBから画像を取得
-        let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
-        let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
-        //テーマ画像を取得
-        readData_theme.getDataInBackground { (data, error) in
-            if error != nil {
-                print(error)
-            } else {
-                self.themeImage.image = UIImage(data: data!)
-            }
-        }
-        //アイコン画像を取得
-        readData_icon.getDataInBackground { (data, error) in
-            if error != nil {
-                print(error)
-            } else {
-                self.iconImage.image = UIImage(data: data!)
-            }
-        }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        //NCMBからユーザー情報を取得
         let user = NCMBUser.current()
         
-        if user?.object(forKey: "Profile") != nil {
-            profileLabel.text = user?.object(forKey: "Profile") as! String
-            userID.text = "@" + (user?.userName)!
+        //NCMBからユーザー情報を取得
+        if let _ = user!.object(forKey: "Profile") {
+            profileLabel.text = (user!.object(forKey: "Profile") as! String)
+            userID.text = "@" + (user!.userName)!
             
             //SNSのURLを取得
-            twitterURL = user?.object(forKey: "TwitterURL") as! String
+            twitterURL = user!.object(forKey: "TwitterURL") as! String
             if twitterURL != "" {
                 twitterIcon.alpha = 1.0
             } else {
                 twitterIcon.alpha = 0.5
             }
-            instagramURL = user?.object(forKey: "InstagramURL") as! String
+            instagramURL = user!.object(forKey: "InstagramURL") as! String
             if instagramURL != "" {
                 instagramIcon.alpha = 1.0
             } else {
                 instagramIcon.alpha = 0.5
             }
-            facebookURL = user?.object(forKey: "FacebookURL") as! String
+            facebookURL = user!.object(forKey: "FacebookURL") as! String
             if facebookURL != "" {
                 facebookIcon.alpha = 1.0
             } else {
                 facebookIcon.alpha = 0.5
             }
             
-            //NCMBから画像を取得
-            let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as! NCMBFile
-            let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as! NCMBFile
+            //セルの色を取得
+            itemColor_Save = user!.object(forKey: "ItemColor") as! String
+            confirmColor2()
+            
+            //更新
+            tableView.reloadData()
+        } else {
+            
+        }
+        
+        //NCMBから画像を取得
+        if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
             //テーマ画像を取得
             readData_theme.getDataInBackground { (data, error) in
                 if error != nil {
@@ -159,6 +152,11 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     self.themeImage.image = UIImage(data: data!)
                 }
             }
+        } else {
+            //代わりの画像を用意
+        }
+        
+        if let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
             //アイコン画像を取得
             readData_icon.getDataInBackground { (data, error) in
                 if error != nil {
@@ -167,10 +165,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     self.iconImage.image = UIImage(data: data!)
                 }
             }
-            //更新
-            tableView.reloadData()
         } else {
-            
+            //代わりの画像を用意
         }
         
     }
@@ -472,6 +468,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             }) { (progress) in
                 print("icon:" + String(progress))
             }
+            //アイテムカラー(文字列)を取得
+            confirmColor1()
             //NCMBにユーザー情報を保存
             let user = NCMBUser.current()
             user?.setObject(profileLabel.text, forKey: "Profile")
@@ -479,7 +477,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             user?.setObject(instagramURL, forKey: "InstagramURL")
             user?.setObject(facebookURL, forKey: "FacebookURL")
             user?.setObject([["",""],["",""]], forKey: "Item")
-            user?.setObject("\(itemColor)", forKey: "ItemColor")
+            user?.setObject(itemColor_Save, forKey: "ItemColor")
             user?.saveInBackground({ (error) in
                 if error != nil {
                     print(error)
@@ -488,6 +486,76 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             
         }
         
+    }
+    
+    //選択したセルの色(文字列)を取得
+    func confirmColor1() {
+        switch itemColor {
+        case UIColor.black:
+            itemColor_Save = "black"
+        case UIColor.darkGray:
+            itemColor_Save = "darkGray"
+        case UIColor.lightGray:
+            itemColor_Save = "lightGray"
+        case UIColor.gray:
+            itemColor_Save = "gray"
+        case UIColor.red:
+            itemColor_Save = "red"
+        case UIColor.green:
+            itemColor_Save = "green"
+        case UIColor.blue:
+            itemColor_Save = "blue"
+        case UIColor.cyan:
+            itemColor_Save = "cyan"
+        case UIColor.yellow:
+            itemColor_Save = "yellow"
+        case UIColor.magenta:
+            itemColor_Save = "magenta"
+        case UIColor.orange:
+            itemColor_Save = "orange"
+        case UIColor.purple:
+            itemColor_Save = "purple"
+        case UIColor.brown:
+            itemColor_Save = "brown"
+        default:
+            itemColor_Save = "white"
+            break
+        }
+    }
+    
+    //選択したセルの色（文字列）からセルの色（UIColor）を取得
+    func confirmColor2() {
+        switch itemColor_Save {
+        case "black":
+            itemColor = UIColor.black
+        case "darkGray":
+            itemColor = UIColor.darkGray
+        case "lightGray":
+            itemColor = UIColor.lightGray
+        case "gray":
+            itemColor = UIColor.gray
+        case "red":
+            itemColor = UIColor.red
+        case "green":
+            itemColor = UIColor.green
+        case "blue":
+            itemColor = UIColor.blue
+        case "cyan":
+            itemColor = UIColor.cyan
+        case "yellow":
+            itemColor = UIColor.yellow
+        case "magenta":
+            itemColor = UIColor.magenta
+        case "orange":
+            itemColor = UIColor.orange
+        case "purple":
+            itemColor = UIColor.purple
+        case "brown":
+            itemColor = UIColor.brown
+        default:
+            itemColor = UIColor.white
+            break
+        }
     }
     
     //SelectColorViewControllerで選択した色を取得

@@ -55,7 +55,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = 80
         tableView.tableFooterView = UIView()
-        print("users.count:" + "\(users.count)")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,7 +94,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "godetail", sender: nil)
+        //DetailViewControllerのインスタンス
+        let DVC = storyboard?.instantiateViewController(withIdentifier: "godetail") as! DetailViewController
+        //選択したNCMBUserを渡す
+        DVC.user = users[indexPath.row]
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -171,11 +174,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //ユーザーを読み込む
     func loadUsers(searchText: String?) {
         let query = NCMBUser.query()
+        print(query)
         // 自分を除外
-        query?.whereKey("objectId", notEqualTo: NCMBUser.current()?.objectId)
+        query?.whereKey("objectId", notEqualTo: false)
 
         // 退会済みアカウントを除外
-//        query?.whereKey("active", notEqualTo: false)
+        query?.whereKey("active", notEqualTo: false)
 
         // 検索ワードがある場合
         if let text = searchText {
@@ -191,9 +195,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if error != nil {
                 print(error)
             } else {
-                print("getData")
                 // 取得した新着50件のユーザーを格納
+//                print(result)
                 self.users = result as! [NCMBUser]
+                print(self.users)
+                print(self.users.count)
             }
         })
     }
