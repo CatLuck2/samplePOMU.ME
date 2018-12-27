@@ -22,16 +22,6 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="598"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="timelinecell" rowHeight="44" id="oSd-qN-hSL">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oSd-qN-hSL" id="M3d-gs-6cS">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="xx0-j7-V0f" id="C8a-Fe-HuJ"/>
                                     <outlet property="delegate" destination="xx0-j7-V0f" id="P82-EG-fd1"/>
@@ -71,7 +61,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q7g-MK-94n">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="987"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="B0t-Ml-l5R">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B0t-Ml-l5R">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="163"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.96768277520000001" green="0.96768277520000001" blue="0.96768277520000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -85,7 +75,7 @@
                                                     <outlet property="delegate" destination="BYZ-38-t0r" id="zwK-jq-qmM"/>
                                                 </connections>
                                             </tableView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="Npf-rD-hYT">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Npf-rD-hYT">
                                                 <rect key="frame" x="17" y="108" width="100" height="100"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
@@ -96,25 +86,36 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="z5f-6C-OQv">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text=",プロフィール" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="z5f-6C-OQv">
                                                 <rect key="frame" x="17" y="258" width="342" height="150"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <string key="text">プロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィール</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-ツイッター-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="frY-AI-AfC">
+                                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-ツイッター-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="frY-AI-AfC">
                                                 <rect key="frame" x="45" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="mkY-ke-aOj" appends="YES" id="w8D-7G-wp5"/>
+                                                </connections>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="vXi-Kf-aXi">
+                                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-インスタグラム-filled-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="vXi-Kf-aXi">
                                                 <rect key="frame" x="147" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="BGo-ap-3mL" appends="YES" id="8by-bX-e1y"/>
+                                                </connections>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="8Mr-sU-ewJ">
+                                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-フェイスブック-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="8Mr-sU-ewJ">
                                                 <rect key="frame" x="251" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <gestureRecognizers/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="bQg-7b-OIy" appends="YES" id="Kgn-ET-XS3"/>
+                                                </connections>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -161,6 +162,21 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q6x-CR-myJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="bQg-7b-OIy">
+                    <connections>
+                        <action selector="tapGesture_facebook:" destination="Y5E-M8-ueB" id="Nl5-bS-yuA"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="BGo-ap-3mL">
+                    <connections>
+                        <action selector="tapGesture_instagram:" destination="Y5E-M8-ueB" id="Nmg-gF-YMv"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="mkY-ke-aOj">
+                    <connections>
+                        <action selector="tapGesture_twitter:" destination="Y5E-M8-ueB" id="mww-XY-BJo"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2478" y="-932"/>
         </scene>
@@ -211,11 +227,10 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="8fm-3B-UjY">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="プロフィール" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="8fm-3B-UjY">
                                                 <rect key="frame" x="17" y="258" width="342" height="150"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <string key="text">プロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィールプロフィール</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
@@ -235,7 +250,7 @@
                                                     <outletCollection property="gestureRecognizers" destination="VbQ-SW-XmS" appends="YES" id="F02-tG-3IB"/>
                                                 </connections>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="猫.png" translatesAutoresizingMaskIntoConstraints="NO" id="y4A-fz-col">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icons8-フェイスブック-96.png" translatesAutoresizingMaskIntoConstraints="NO" id="y4A-fz-col">
                                                 <rect key="frame" x="251" y="426" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <gestureRecognizers/>
@@ -475,7 +490,7 @@
         <image name="icons8-インフォ-45.png" width="45" height="45"/>
         <image name="icons8-コンタクト-45.png" width="45" height="45"/>
         <image name="icons8-ツイッター-96.png" width="96" height="96"/>
+        <image name="icons8-フェイスブック-96.png" width="96" height="96"/>
         <image name="icons8-ホーム-48.png" width="48" height="48"/>
-        <image name="猫.png" width="600" height="600"/>
     </resources>
 </document>

@@ -47,10 +47,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //検索バーを設置
         setSearchBar()
-        loadUsers(searchText: nil)
         
-        tableView.register(UINib(nibName: "TimeLineViewCell", bundle: nil), forCellReuseIdentifier: "timelinecell")
+        tableView.register(UINib(nibName: "TimeLineViewCell", bundle: Bundle.main), forCellReuseIdentifier: "timelinecell")
         //tableViewのセルの高さを設定
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = 80
@@ -61,24 +61,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if users.count != 0 {
-            loadUsers(searchText: nil)
-        } else {}
+        loadUsers(searchText: nil)
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        return self.users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "timelinecell", for: indexPath) as! TimeLineViewCell
         
         //ユーザー名を取得
-        if users.count != 0 {
-            print("displaycell")
-            cell.userName.text = "@" + (users[indexPath.row].userName)!
-            //アイコン画像を取得
-            let readData_icon = NCMBFile.file(withName: "icon " + users[indexPath.row].objectId, data: nil) as! NCMBFile
+        if let _ = users[indexPath.row].userName {
+            
+            cell.userName.text = "@" + users[indexPath.row].userName
+        }
+        //アイコン画像を取得
+        if let readData_icon = NCMBFile.file(withName: "icon " + users[indexPath.row].objectId, data: nil) as? NCMBFile {
             readData_icon.getDataInBackground { (data, error) in
                 if error != nil {
                     print(error)
@@ -86,9 +86,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     cell.iconImageView.image = UIImage(data: data!)
                 }
             }
-        } else {}
-        cell.iconImageView.layer.cornerRadius = cell.iconImageView.bounds.width / 2.0
-        cell.iconImageView.layer.masksToBounds = true
+        }
         
         return cell
     }
@@ -98,6 +96,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let DVC = storyboard?.instantiateViewController(withIdentifier: "godetail") as! DetailViewController
         //選択したNCMBUserを渡す
         DVC.user = users[indexPath.row]
+        self.navigationController?.pushViewController(DVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -107,7 +106,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let logoutAction = UIAlertAction(title: "ログアウト", style: .default) { (action) in
             NCMBUser.logOutInBackground({ (error) in
                 if error != nil {
-                    print("logout error")
+                    print(error)
                 } else {
                     self.syncronize()
                 }
@@ -117,7 +116,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let user = NCMBUser.current()
             user?.deleteInBackground({ (error) in
                 if error != nil {
-                    print("delete error")
+                    print(error)
                 } else {
                     self.syncronize()
                 }
@@ -174,12 +173,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //ユーザーを読み込む
     func loadUsers(searchText: String?) {
         let query = NCMBUser.query()
-        print(query)
         // 自分を除外
         query?.whereKey("objectId", notEqualTo: false)
 
         // 退会済みアカウントを除外
         query?.whereKey("active", notEqualTo: false)
+        
+        //各データを除外
+//        query?.key
 
         // 検索ワードがある場合
         if let text = searchText {
@@ -196,12 +197,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 print(error)
             } else {
                 // 取得した新着50件のユーザーを格納
-//                print(result)
                 self.users = result as! [NCMBUser]
-                print(self.users)
-                print(self.users.count)
+                self.tableView.reloadData()
             }
         })
+        
     }
     
     //ログアウトする際の処理

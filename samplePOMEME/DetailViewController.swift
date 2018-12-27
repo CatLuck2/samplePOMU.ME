@@ -38,6 +38,8 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(user)
+        
         //角丸
         iconImage.layer.cornerRadius = 50
         //枠線
@@ -61,6 +63,14 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         tableView.rowHeight = 72
         //tableViewの不要なセルを削除
         tableView.tableFooterView = UIView()
+        
+        //SNS用のタップジェスチャー
+//        let twitterGesture = UIGestureRecognizer(target: self, action: #selector(DetailViewController.openSNSLink(_:)))
+//        twitterGesture.delegate = self
+//        let instagramGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
+//        instagramGesture.delegate = self
+//        let facebookGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
+//        facebookGesture.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,7 +102,7 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         
         //NCMBから画像を取得
-        if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
+        if let readData_theme = NCMBFile.file(withName: "theme " + user.objectId, data: nil) as? NCMBFile {
             //テーマ画像を取得
             readData_theme.getDataInBackground { (data, error) in
                 if error != nil {
@@ -103,9 +113,10 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
             }
         } else {
             //代わりの画像を用意
+            self.themeImage.image = UIImage(named: "icons8-コンタクト-45.png")
         }
         
-        if let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
+        if let readData_icon = NCMBFile.file(withName: "icon " + user.objectId, data: nil) as? NCMBFile {
             //アイコン画像を取得
             readData_icon.getDataInBackground { (data, error) in
                 if error != nil {
@@ -116,6 +127,7 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
             }
         } else {
             //代わりの画像を用意
+            self.iconImage.image = UIImage(named: "icons8-コンタクト-45.png")
         }
         //更新
         tableView.reloadData()
@@ -166,6 +178,32 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    //各SNSのジェスチャー
+    //Twitter
+    @IBAction func tapGesture_twitter(_ sender: UITapGestureRecognizer) {
+        openSNSLink(url: user.object(forKey: "TwitterURL") as! String)
+    }
+    //Instagram
+    @IBAction func tapGesture_instagram(_ sender: UITapGestureRecognizer) {
+        openSNSLink(url: user.object(forKey: "InstagramURL") as! String)
+    }
+    //Facebook
+    @IBAction func tapGesture_facebook(_ sender: UITapGestureRecognizer) {
+        openSNSLink(url: user.object(forKey: "FacebookURL") as! String)
+    }
+    
+    //SNSのリンクをsafari経由で開く
+    @objc func openSNSLink(url:String) {
+        //http,httpsかを確認
+        if url.prefix(7) == "http://" || url.prefix(8) == "https://" {
+            //文字列をURLに変換
+            let url = URL(string: url)!
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+        } else {}
     }
     
     //同期する際の処理

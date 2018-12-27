@@ -36,7 +36,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //NCMBに保存するための
     
     //セルの色を格納
-    var itemColor:UIColor = UIColor.gray
+    var itemColor = UIColor()
     //NCMBに保存用のセルカラー
     var itemColor_Save = ""
     
@@ -167,8 +167,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             }
         } else {
             //代わりの画像を用意
+            self.iconImage.image = UIImage(named: "icons8-コンタクト-45.png")
         }
-        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -177,9 +177,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath) as! UserPageViewCell
-        //背景色を初期化
-        cell.linkImageView.backgroundColor = UIColor.white
-        cell.textLabel?.textColor = UIColor.black
+        
         //追加するボタンの時
         if objects[indexPath.row].title == "追加する" {
             cell.linkImageView.backgroundColor = UIColor.blue
@@ -189,6 +187,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //URLの場合
             if objects[indexPath.row].link != "" {
                 cell.textLabel?.textColor = UIColor.white
+                print(itemColor)
+                print(UIColor.gray)
                 cell.linkImageView.backgroundColor = itemColor
             //コメントの場合
             } else {
@@ -457,17 +457,13 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 if error != nil {
                     print(error)
                 } else {}
-            }) { (progress) in
-                print("theme:" + String(progress))
-            }
+            })
             //アイコン画像を保存
             iconImageFile.saveInBackground({ (error) in
                 if error != nil {
                     print(error)
                 } else {}
-            }) { (progress) in
-                print("icon:" + String(progress))
-            }
+            })
             //アイテムカラー(文字列)を取得
             confirmColor1()
             //NCMBにユーザー情報を保存
@@ -562,6 +558,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     func recieve(color: UIColor) {
         //取得
         self.itemColor = color
+        print(itemColor)
         //tableViewを更新
         tableView.reloadData()
     }

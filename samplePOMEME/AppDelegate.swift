@@ -17,6 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+//        yourTabBarController.selectedViewController=[yourTabBarController.viewControllers objectAtIndex:3];//or whichever index you want
+        
+//        let tabBar: UITabBarController = self.window?.rootViewController as! UITabBarController
+//        
+//        tabBar.selectedIndex = 1
+
+        
         //UserDefaultとログイン状態を初期化
         let ud = UserDefaults.standard
         let isLogin = ud.bool(forKey: "LoginStatus")

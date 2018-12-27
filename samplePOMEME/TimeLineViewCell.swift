@@ -16,6 +16,9 @@ class TimeLineViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        iconImageView.layer.cornerRadius = 20
+        iconImageView.layer.borderWidth = 0.5
+        iconImageView.layer.masksToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
