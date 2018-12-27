@@ -28,10 +28,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //タップしたSNSを識別する
     var name_sns = ""
     
+    //ユーザー
+    let user = NCMBUser.current()
     //URLとコメントを持つItemクラス
-    var object = Item()
+    var object = ["",""]
     //Itemクラスを格納する配列
-    var objects = [Item]()
+    var objects = [[String]]()
     
     //NCMBに保存するための
     
@@ -85,6 +87,13 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         tableView.rowHeight = 72
         //tableViewの不要なセルを削除
         tableView.tableFooterView = UIView()
+        //セルの色を取得
+        if let _ = user!.object(forKey: "ItemColor") {
+            itemColor_Save = user!.object(forKey: "ItemColor") as! String
+        } else {
+            itemColor_Save = "gray"
+        }
+        confirmColor2()
         
         //imagePicker用のタップジェスチャー
         let imageGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
@@ -105,13 +114,13 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let user = NCMBUser.current()
-        
         //NCMBからユーザー情報を取得
         if let _ = user!.object(forKey: "Profile") {
-            profileLabel.text = (user!.object(forKey: "Profile") as! String)
-            userID.text = "@" + (user!.userName)!
             
+            //プロフィール
+            profileLabel.text = (user!.object(forKey: "Profile") as! String)
+            //ユーザー名
+            userID.text = "@" + (user!.userName)!
             //SNSのURLを取得
             twitterURL = user!.object(forKey: "TwitterURL") as! String
             if twitterURL != "" {
@@ -131,22 +140,22 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             } else {
                 facebookIcon.alpha = 0.5
             }
-            
-            //セルの色を取得
-            itemColor_Save = user!.object(forKey: "ItemColor") as! String
-            confirmColor2()
-            
+            //アイテムを取得
+            objects = user!.object(forKey: "Item") as! [[String]]
+            if isEditMode == true {
+                objects.append(["追加する",""])
+            } else {}
             //更新
             tableView.reloadData()
-        } else {
             
-        }
+        } else {}
         
         //NCMBから画像を取得
         if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
             //テーマ画像を取得
             readData_theme.getDataInBackground { (data, error) in
                 if error != nil {
+                    self.themeImage.image = UIImage(named: "icons8-画像-100.png")
                     print(error)
                 } else {
                     self.themeImage.image = UIImage(data: data!)
@@ -154,12 +163,14 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             }
         } else {
             //代わりの画像を用意
+            self.themeImage.image = UIImage(named: "icons8-画像-100.png")
         }
         
         if let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
             //アイコン画像を取得
             readData_icon.getDataInBackground { (data, error) in
                 if error != nil {
+                    self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
                     print(error)
                 } else {
                     self.iconImage.image = UIImage(data: data!)
@@ -167,7 +178,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             }
         } else {
             //代わりの画像を用意
-            self.iconImage.image = UIImage(named: "icons8-コンタクト-45.png")
+            self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
         }
     }
     
@@ -179,24 +190,23 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: "userpagecell", for: indexPath) as! UserPageViewCell
         
         //追加するボタンの時
-        if objects[indexPath.row].title == "追加する" {
+        if objects[indexPath.row][0] == "追加する" {
             cell.linkImageView.backgroundColor = UIColor.blue
             cell.textLabel?.textColor = UIColor.white
         //他の要素の時
         } else {
             //URLの場合
-            if objects[indexPath.row].link != "" {
+            if objects[indexPath.row][1] != "" {
                 cell.textLabel?.textColor = UIColor.white
-                print(itemColor)
-                print(UIColor.gray)
                 cell.linkImageView.backgroundColor = itemColor
             //コメントの場合
             } else {
+                cell.textLabel?.textColor = UIColor.black
                 cell.linkImageView.backgroundColor = UIColor.white
             }
         }
         //セルにtitlaプロパティを代入
-        cell.textLabel?.text = objects[indexPath.row].title
+        cell.textLabel?.text = objects[indexPath.row][0]
         //セルのテキストを中央揃いにする
         cell.textLabel?.textAlignment = .center
         return cell
@@ -214,7 +224,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     let commentAlert = UIAlertController(title: "コメントを追加", message: "コメントを入力してください", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
                         //Itemクラスを宣言
-                        let objectItem = Item()
+                        var object = ["",""]
                         //textFieldを配列に格納
                         guard let textfield:[UITextField] = commentAlert.textFields else {return}
                         //配列からテキストを取り出す
@@ -222,14 +232,14 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                             switch textField.tag {
                             case 1:
                                 //textFieldに入力した内容をobjectのcommentプロパティに追加
-                                objectItem.title = textField.text!
+                                object[0] = textField.text!
                             default: break
                             }
                         }
-                        if objectItem.title != "" {
+                        if object[0] != "" {
                             commentAlert.dismiss(animated: true, completion: nil)
                             //objectsにobjectを追加
-                            self.objects.insert(objectItem, at: 0)
+                            self.objects.insert(object, at: 0)
                             //更新
                             tableView.reloadData()
                         } else {
@@ -254,24 +264,24 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     let linkAlert = UIAlertController(title: "リンクを追加", message: "タイトルとURLを入力してください", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: { (action) in
                         //Itemクラスを宣言
-                        let objectItem = Item()
+                        var object = ["",""]
                         //textFieldを配列に格納
                         guard let textfield:[UITextField] = linkAlert.textFields else {return}
                         //配列からテキストを取り出す
                         for textField in textfield {
                             switch textField.tag {
-                            case 1:
+                            case 0:
                                 //textFieldに入力した内容をobjectのtitleプロパティに追加
-                                objectItem.link = textField.text!
-                            case 2:
+                                object[0] = textField.text!
+                            case 1:
                                 //textFieldに入力した内容をobjectのプロパティに追加
-                                objectItem.title = textField.text!
+                                object[1] = textField.text!
                             default: break
                             }
                         }
-                        if objectItem.link != "" && objectItem.title != "" {
+                        if object[1] != "" && object[0] != "" {
                             //objectsにobjectを追加
-                            self.objects.insert(objectItem, at: 0)
+                            self.objects.insert(object, at: 0)
                             linkAlert.dismiss(animated: true, completion: nil)
                             //更新
                             tableView.reloadData()
@@ -285,12 +295,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     })
                     //アラートにtextFieldを追加
                     linkAlert.addTextField { (text:UITextField!) in
-                        text.placeholder = "URLリンク"
-                        text.tag = 1
+                        text.placeholder = "URLタイトル"
+                        text.tag = 0
                     }
                     linkAlert.addTextField { (text:UITextField!) in
-                        text.placeholder = "URLタイトル"
-                        text.tag = 2
+                        text.placeholder = "URLリンク"
+                        text.tag = 1
                     }
                     linkAlert.addAction(okAction)
                     linkAlert.addAction(cancelAction)
@@ -314,10 +324,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                             switch textField.tag {
                             case 1:
                                 //textFieldに入力した内容をobjectのtitleプロパティに追加
-                                self.objects[indexPath.row].link = textField.text!
+                                self.objects[indexPath.row][1] = textField.text!
                             case 2:
                                 //textFieldに入力した内容をobjectのプロパティに追加
-                                self.objects[indexPath.row].title = textField.text!
+                                self.objects[indexPath.row][0] = textField.text!
                             default: break
                             }
                         }
@@ -329,22 +339,22 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                         editAlert.dismiss(animated: true, completion: nil)
                     })
                     //URLの場合
-                    if self.objects[indexPath.row].link != "" {
+                    if self.objects[indexPath.row][1] != "" {
                         //アラートにtextFieldを追加
                         editAlert.addTextField { (text:UITextField!) in
-                            text.text = self.objects[indexPath.row].link
+                            text.text = self.objects[indexPath.row][1]
                             text.placeholder = "URLリンク"
                             text.tag = 1
                         }
                         editAlert.addTextField { (text:UITextField!) in
-                            text.text = self.objects[indexPath.row].title
+                            text.text = self.objects[indexPath.row][0]
                             text.placeholder = "URLタイトル"
                             text.tag = 2
                         }
                     //コメントの場合
                     } else {
                         editAlert.addTextField { (text:UITextField!) in
-                            text.text = self.objects[indexPath.row].title
+                            text.text = self.objects[indexPath.row][0]
                             text.placeholder = "コメント"
                             text.tag = 2
                         }
@@ -389,19 +399,31 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     //twitterのタップジェスチャー
     @IBAction func twitterIconAction(_ sender: UITapGestureRecognizer) {
         name_sns = "twitter"
-        alert_sns()
+        if isEditMode == true {
+            alert_sns()
+        } else {
+            openSNSLink(url: user!.object(forKey: "TwitterURL") as! String)
+        }
     }
     
     //instagramのタップジェスチャー
     @IBAction func instagramIconAction(_ sender: UITapGestureRecognizer) {
         name_sns = "instagram"
-        alert_sns()
+        if isEditMode == true {
+            alert_sns()
+        } else {
+            openSNSLink(url: user!.object(forKey: "InstagramURL") as! String)
+        }
     }
     
     //facebookのタップジェスチャー
     @IBAction func facebookIconAction(_ sender: UITapGestureRecognizer) {
         name_sns = "facebook"
-        alert_sns()
+        if isEditMode == true {
+            alert_sns()
+        } else {
+            openSNSLink(url: user!.object(forKey: "FacebookURL") as! String)
+        }
     }
     
     
@@ -410,10 +432,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         //編集画面ではない時
         if isEditMode == false {
             //"追加する"を表示
-            let objectItem = Item()
-            objectItem.link = ""
-            objectItem.title = "追加する"
-            objects.append(objectItem)
+            objects.append(["追加する",""])
             //リンクカラーボタンを表示
             linkcolorButton.isHidden = false
             //imageViewをタップ可能にする
@@ -472,7 +491,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             user?.setObject(twitterURL, forKey: "TwitterURL")
             user?.setObject(instagramURL, forKey: "InstagramURL")
             user?.setObject(facebookURL, forKey: "FacebookURL")
-            user?.setObject([["",""],["",""]], forKey: "Item")
+            user?.setObject(objects, forKey: "Item")
             user?.setObject(itemColor_Save, forKey: "ItemColor")
             user?.saveInBackground({ (error) in
                 if error != nil {
@@ -558,10 +577,23 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     func recieve(color: UIColor) {
         //取得
         self.itemColor = color
-        print(itemColor)
         //tableViewを更新
         tableView.reloadData()
     }
+    
+    //SNSのリンクをsafari経由で開く
+    @objc func openSNSLink(url:String) {
+        //http,httpsかを確認
+        if url.prefix(7) == "http://" || url.prefix(8) == "https://" {
+            //文字列をURLに変換
+            let url = URL(string: url)!
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+        } else {}
+    }
+    
+    //リンクアイテムをsafari経由で開く
     
     //アルバムを起動する
     func album() {
