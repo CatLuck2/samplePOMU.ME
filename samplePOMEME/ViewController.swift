@@ -42,6 +42,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //検索バーの宣言
     var searchBar: UISearchBar!
     
+    //インジケーター
+    let reflesh = UIRefreshControl()
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -50,20 +53,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //検索バーを設置
         setSearchBar()
         
+        //NCMBからデータ取得
+        loadUsers(searchText: nil)
+        
         tableView.register(UINib(nibName: "TimeLineViewCell", bundle: Bundle.main), forCellReuseIdentifier: "timelinecell")
         //tableViewのセルの高さを設定
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = 80
         tableView.tableFooterView = UIView()
         
+        reflesh.tintColor = UIColor.green
+        reflesh.attributedTitle = NSAttributedString(string: "更新")
+        reflesh.addTarget(self, action: #selector(update), for: .valueChanged)
+        tableView.refreshControl = reflesh
+        
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        loadUsers(searchText: nil)
-        tableView.reloadData()
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//
+//    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.users.count
@@ -176,12 +186,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // 自分を除外
         query?.whereKey("objectId", notEqualTo: false)
 
-        // 退会済みアカウントを除外
-        query?.whereKey("active", notEqualTo: false)
-        
-        //各データを除外
-//        query?.key
-
         // 検索ワードがある場合
         if let text = searchText {
             query?.whereKey("userName", equalTo: text)
@@ -198,10 +202,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             } else {
                 // 取得した新着50件のユーザーを格納
                 self.users = result as! [NCMBUser]
+                print("users")
+                print(self.users)
                 self.tableView.reloadData()
             }
         })
         
+    }
+    
+    //インジケーター用のloadUser
+    @objc func update() {
+        self.reflesh.endRefreshing()
+        loadUsers(searchText: nil)
     }
     
     //ログアウトする際の処理

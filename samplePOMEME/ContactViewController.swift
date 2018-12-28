@@ -24,7 +24,7 @@ class ContactViewController: UIViewController,MFMailComposeViewControllerDelegat
             mail.setSubject("ご意見")
             mail.setMessageBody("", isHTML: false)
             mail.mailComposeDelegate = self
-            UIApplication.shared.keyWindow?.rootViewController?.present(mail, animated: true)
+            self.navigationController?.present(mail, animated: true, completion: nil)
         } else {
             let alert = UIAlertController(title: "No Mail Accounts", message: "Please set up mail accounts", preferredStyle: .alert)
             let dismiss = UIAlertAction(title: "OK", style: .cancel, handler: nil)

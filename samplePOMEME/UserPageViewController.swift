@@ -60,7 +60,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         //プロフィール文のデリゲート
         profileLabel.delegate = self
-
+        
         //アイコン
         iconImage.layer.cornerRadius = 50
         iconImage.layer.borderWidth = 0.5
@@ -107,6 +107,17 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         self.instagramIcon.addGestureRecognizer(alertGesture)
         self.facebookIcon.addGestureRecognizer(alertGesture)
         
+        // 仮のサイズでツールバー生成
+        let kbToolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
+        kbToolBar.barStyle = UIBarStyle.default  // スタイルを設定
+        kbToolBar.sizeToFit()  // 画面幅に合わせてサイズを変更
+        // スペーサー
+        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+        // 閉じるボタン
+        let commitButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: "commitButtonTapped")
+        kbToolBar.items = [spacer, commitButton]
+        profileLabel.inputAccessoryView = kbToolBar
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -114,39 +125,89 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         if isEditMode == false {
             //NCMBからユーザー情報を取得
-            if let _ = user!.object(forKey: "Profile") {
-                //プロフィール
+//            if let _ = user!.object(forKey: "Profile") {
+//                //プロフィール
+//                profileLabel.text = (user!.object(forKey: "Profile") as! String)
+//                //ユーザー名
+//                userID.text = "@" + (user!.userName)!
+//                //SNSのURLを取得
+//                twitterURL = user!.object(forKey: "TwitterURL") as! String
+//                if twitterURL != "" {
+//                    twitterIcon.alpha = 1.0
+//                } else {
+//                    twitterIcon.alpha = 0.5
+//                }
+//                instagramURL = user!.object(forKey: "InstagramURL") as! String
+//                if instagramURL != "" {
+//                    instagramIcon.alpha = 1.0
+//                } else {
+//                    instagramIcon.alpha = 0.5
+//                }
+//                facebookURL = user!.object(forKey: "FacebookURL") as! String
+//                if facebookURL != "" {
+//                    facebookIcon.alpha = 1.0
+//                } else {
+//                    facebookIcon.alpha = 0.5
+//                }
+//                //アイテムを取得
+//                objects = user!.object(forKey: "Item") as! [[String]]
+//                if isEditMode == true {
+//                    objects.append(["追加する",""])
+//                } else {}
+//                //更新
+//                tableView.reloadData()
+//
+//            } else {}
+            
+            //取得したユーザーからデータを取得
+            if let _ = user!.object(forKey: "Profile") as? String {
                 profileLabel.text = (user!.object(forKey: "Profile") as! String)
-                //ユーザー名
-                userID.text = "@" + (user!.userName)!
-                //SNSのURLを取得
+            }
+            
+            userID.text = "@" + (user!.userName)!
+            
+            //SNSのURLを取得
+            if let _ = user!.object(forKey: "TwitterURL") as? String {
                 twitterURL = user!.object(forKey: "TwitterURL") as! String
                 if twitterURL != "" {
                     twitterIcon.alpha = 1.0
                 } else {
                     twitterIcon.alpha = 0.5
                 }
+            }
+            
+            if let _ = user!.object(forKey: "InstagramURL") as? String {
                 instagramURL = user!.object(forKey: "InstagramURL") as! String
                 if instagramURL != "" {
                     instagramIcon.alpha = 1.0
                 } else {
                     instagramIcon.alpha = 0.5
                 }
+            }
+            
+            if let _ = user!.object(forKey: "FacebookURL") as? String {
                 facebookURL = user!.object(forKey: "FacebookURL") as! String
                 if facebookURL != "" {
                     facebookIcon.alpha = 1.0
                 } else {
                     facebookIcon.alpha = 0.5
                 }
-                //アイテムを取得
-                objects = user!.object(forKey: "Item") as! [[String]]
-                if isEditMode == true {
-                    objects.append(["追加する",""])
-                } else {}
-                //更新
-                tableView.reloadData()
-                
-            } else {}
+            }
+            
+            //アイテムを取得
+            let query = NCMBUser.query()
+            query?.whereKey("objectId", equalTo: NCMBUser.current().objectId)
+            query?.findObjectsInBackground({ (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    var users = [NCMBUser]()
+                    // 取得した新着50件のユーザーを格納
+                    users = data as! [NCMBUser]
+                    self.objects = users[0].object(forKey: "Item") as! [[String]]
+                    self.tableView.reloadData()
+                }
+            })
             
             //NCMBから画像を取得
             if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
@@ -178,6 +239,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 //代わりの画像を用意
                 self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
             }
+            
+            tableView.reloadData()
         } else {}
         
         
@@ -194,13 +257,13 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         if objects[indexPath.row][0] == "追加する" {
             cell.linkImageView.backgroundColor = UIColor.blue
             cell.textLabel?.textColor = UIColor.white
-        //他の要素の時
+            //他の要素の時
         } else {
             //URLの場合
             if objects[indexPath.row][1] != "" {
                 cell.textLabel?.textColor = UIColor.white
                 cell.linkImageView.backgroundColor = itemColor
-            //コメントの場合
+                //コメントの場合
             } else {
                 cell.textLabel?.textColor = UIColor.black
                 cell.linkImageView.backgroundColor = UIColor.white
@@ -310,7 +373,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 alert.addAction(commentAction)
                 alert.addAction(linkAction)
                 self.present(alert, animated: true, completion: nil)
-            //リンクやコメントをタップしたら
+                //リンクやコメントをタップしたら
             } else {
                 let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 //編集
@@ -329,6 +392,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                             case 1:
                                 //textFieldに入力した内容をobjectのプロパティに追加
                                 self.objects[indexPath.row][1] = textField.text!
+                            case 2:
+                                self.objects[indexPath.row][0] = textField.text!
                             default: break
                             }
                         }
@@ -343,16 +408,16 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                     if self.objects[indexPath.row][1] != "" {
                         //アラートにtextFieldを追加
                         editAlert.addTextField { (text:UITextField!) in
-                            text.text = self.objects[indexPath.row][1]
+                            text.text = self.objects[indexPath.row][0]
                             text.placeholder = "URLタイトル"
                             text.tag = 0
                         }
                         editAlert.addTextField { (text:UITextField!) in
-                            text.text = self.objects[indexPath.row][0]
+                            text.text = self.objects[indexPath.row][1]
                             text.placeholder = "URLリンク"
                             text.tag = 1
                         }
-                    //コメントの場合
+                        //コメントの場合
                     } else {
                         editAlert.addTextField { (text:UITextField!) in
                             text.text = self.objects[indexPath.row][0]
@@ -379,7 +444,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true, completion: nil)
             }
-        //編集画面でないなら
+            //編集画面でないなら
         } else {
             //もしリンクならリンク先を開く
             if objects[indexPath.row][1] != "" {
@@ -454,7 +519,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             isEditMode = true
             //更新
             tableView.reloadData()
-        //編集画面の時
+            //編集画面の時
         } else {
             objects.remove(at: objects.count - 1)
             linkcolorButton.isHidden = true
@@ -721,17 +786,17 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     //画像が回転しないように加工
-//    func translate(from image: UIImage) -> UIImage? {
-//        guard let cgImage1 = image.cgImage else { return nil }
-//        let ciImage = CIImage(cgImage: cgImage1)
-//        let ciContext = CIContext(options: nil)
-//
-//        /* CIImageを使用した画像編集処理 */
-//
-//        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
-//        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
-//        return result
-//    }
+    //    func translate(from image: UIImage) -> UIImage? {
+    //        guard let cgImage1 = image.cgImage else { return nil }
+    //        let ciImage = CIImage(cgImage: cgImage1)
+    //        let ciContext = CIContext(options: nil)
+    //
+    //        /* CIImageを使用した画像編集処理 */
+    //
+    //        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
+    //        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
+    //        return result
+    //    }
     
     //ログアウトする際の処理
     func syncronize() {
@@ -747,9 +812,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     //キーボードを閉じる
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        textView.resignFirstResponder()
-        return true
+    func commitButtonTapped (){
+        self.view.endEditing(true)
     }
-    
 }

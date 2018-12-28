@@ -9,7 +9,7 @@
 import UIKit
 import NCMB
 
-class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
+class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,UITextViewDelegate {
     
     //ObjectIDを取得
     var objectID = ""
@@ -21,6 +21,9 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     //NCMBUser用の配列
     var user = NCMBUser()
+    
+    //インジケーター
+    let reflesh = UIRefreshControl()
     
     //URLとコメントを持つ配列
     var object = ["",""]
@@ -60,7 +63,11 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         facebookIcon.layer.cornerRadius = 40
         facebookIcon.layer.borderWidth = 0.5
         facebookIcon.layer.masksToBounds = true
+        
+        profileText.delegate = self
 
+        tableView.delegate = self
+        tableView.dataSource = self
         //DetailViewCellを設定
         tableView.register(UINib(nibName: "DetailViewCell", bundle: Bundle.main), forCellReuseIdentifier: "detailcell")
         //tableViewのセルの高さを設定
@@ -77,88 +84,12 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         confirmColor2()
         
-        //SNS用のタップジェスチャー
-//        let twitterGesture = UIGestureRecognizer(target: self, action: #selector(DetailViewController.openSNSLink(_:)))
-//        twitterGesture.delegate = self
-//        let instagramGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
-//        instagramGesture.delegate = self
-//        let facebookGesture = UIGestureRecognizer(target: self, action: #selector(UserPageViewController.themeImageAction(_:)))
-//        facebookGesture.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        //データ取得
+        loadUser()
         
-        //取得したユーザーからデータを取得
-        if let _ = user.object(forKey: "Profile") as? String {
-            profileText.text = (user.object(forKey: "Profile") as! String)
-        }
+        print(user)
         
-        userID.text = "@" + (user.userName)!
-        
-        //SNSのURLを取得
-        if let _ = user.object(forKey: "TwitterURL") as? String {
-            twitterURL = user.object(forKey: "TwitterURL") as! String
-            if twitterURL != "" {
-                twitterIcon.alpha = 1.0
-            } else {
-                twitterIcon.alpha = 0.5
-            }
-        }
-        
-        if let _ = user.object(forKey: "InstagramURL") as? String {
-            instagramURL = user.object(forKey: "InstagramURL") as! String
-            if instagramURL != "" {
-                instagramIcon.alpha = 1.0
-            } else {
-                instagramIcon.alpha = 0.5
-            }
-        }
-        
-        if let _ = user.object(forKey: "FacebookURL") as? String {
-            facebookURL = user.object(forKey: "FacebookURL") as! String
-            if facebookURL != "" {
-                facebookIcon.alpha = 1.0
-            } else {
-                facebookIcon.alpha = 0.5
-            }
-        }
-        
-        //アイテムを取得
-        if let _ = user.object(forKey: "Item") as? [[String]] {
-            objects = user.object(forKey: "Item") as! [[String]]
-        } else {}
-        
-        //NCMBから画像を取得
-        if let readData_theme = NCMBFile.file(withName: "theme " + user.objectId, data: nil) as? NCMBFile {
-            //テーマ画像を取得
-            readData_theme.getDataInBackground { (data, error) in
-                if error != nil {
-                    print(error)
-                } else {
-                    self.themeImage.image = UIImage(data: data!)
-                }
-            }
-        } else {
-            //代わりの画像を用意
-            self.themeImage.image = UIImage(named: "icons8-画像-100.png")
-        }
-        
-        if let readData_icon = NCMBFile.file(withName: "icon " + user.objectId, data: nil) as? NCMBFile {
-            //アイコン画像を取得
-            readData_icon.getDataInBackground { (data, error) in
-                if error != nil {
-                    print(error)
-                } else {
-                    self.iconImage.image = UIImage(data: data!)
-                }
-            }
-        } else {
-            //代わりの画像を用意
-            self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
-        }
-        
-        tableView.reloadData()
+        self.navigationItem.title = "@" + (user.userName)!
         
     }
     
@@ -238,6 +169,80 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
     @IBAction func tapGesture_facebook(_ sender: UITapGestureRecognizer) {
         openSNSLink(url: user.object(forKey: "FacebookURL") as! String)
     }
+    
+    @objc func loadUser() {
+        //取得したユーザーからデータを取得
+        if let _ = user.object(forKey: "Profile") as? String {
+            profileText.text = (user.object(forKey: "Profile") as! String)
+        }
+        
+        userID.text = "@" + (user.userName)!
+        
+        //SNSのURLを取得
+        if let _ = user.object(forKey: "TwitterURL") as? String {
+            twitterURL = user.object(forKey: "TwitterURL") as! String
+            if twitterURL != "" {
+                twitterIcon.alpha = 1.0
+            } else {
+                twitterIcon.alpha = 0.5
+            }
+        }
+        
+        if let _ = user.object(forKey: "InstagramURL") as? String {
+            instagramURL = user.object(forKey: "InstagramURL") as! String
+            if instagramURL != "" {
+                instagramIcon.alpha = 1.0
+            } else {
+                instagramIcon.alpha = 0.5
+            }
+        }
+        
+        if let _ = user.object(forKey: "FacebookURL") as? String {
+            facebookURL = user.object(forKey: "FacebookURL") as! String
+            if facebookURL != "" {
+                facebookIcon.alpha = 1.0
+            } else {
+                facebookIcon.alpha = 0.5
+            }
+        }
+        
+        //アイテムを取得
+        if let _ = user.object(forKey: "Item") as? [[String]] {
+            objects = user.object(forKey: "Item") as! [[String]]
+        } else {}
+        
+        //NCMBから画像を取得
+        if let readData_theme = NCMBFile.file(withName: "theme " + user.objectId, data: nil) as? NCMBFile {
+            //テーマ画像を取得
+            readData_theme.getDataInBackground { (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    self.themeImage.image = UIImage(data: data!)
+                }
+            }
+        } else {
+            //代わりの画像を用意
+            self.themeImage.image = UIImage(named: "icons8-画像-100.png")
+        }
+        
+        if let readData_icon = NCMBFile.file(withName: "icon " + user.objectId, data: nil) as? NCMBFile {
+            //アイコン画像を取得
+            readData_icon.getDataInBackground { (data, error) in
+                if error != nil {
+                    print(error)
+                } else {
+                    self.iconImage.image = UIImage(data: data!)
+                }
+            }
+        } else {
+            //代わりの画像を用意
+            self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
+        }
+        
+        tableView.reloadData()
+    }
+
     
     //SNSのリンクをsafari経由で開く
     @objc func openSNSLink(url:String) {
@@ -332,6 +337,11 @@ class DetailViewController: UIViewController,UITableViewDataSource,UITableViewDe
         let ud = UserDefaults.standard
         ud.set(false, forKey: "LoginStatus")
         ud.synchronize()
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        profileText.resignFirstResponder()
+        return true
     }
     
 }
