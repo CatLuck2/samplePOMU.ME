@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class ContactViewController: UIViewController {
+class ContactViewController: UIViewController,MFMailComposeViewControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,15 +17,26 @@ class ContactViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func contactForm(_ sender: Any) {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.setToRecipients(["test@gmail.com"])
+            mail.setSubject("ご意見")
+            mail.setMessageBody("", isHTML: false)
+            mail.mailComposeDelegate = self
+            UIApplication.shared.keyWindow?.rootViewController?.present(mail, animated: true)
+        } else {
+            let alert = UIAlertController(title: "No Mail Accounts", message: "Please set up mail accounts", preferredStyle: .alert)
+            let dismiss = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alert.addAction(dismiss)
+            self.present(alert, animated: true, completion: nil)
+        }
     }
-    */
-
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        
+        controller.dismiss(animated: true, completion: nil)
+        
+    }
+    
 }

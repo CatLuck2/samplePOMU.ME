@@ -28,6 +28,10 @@
                     <constraint firstAttribute="bottomMargin" secondItem="i1v-mt-uTj" secondAttribute="bottom" constant="8" id="7Ad-Dl-JFW"/>
                     <constraint firstItem="i1v-mt-uTj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="3" id="G16-0S-cgA"/>
                     <constraint firstItem="i1v-mt-uTj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="6" id="Khk-g4-NFQ"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="i1v-mt-uTj" secondAttribute="bottom" constant="8" id="QNF-VZ-t3b"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="i1v-mt-uTj" secondAttribute="trailing" constant="3" id="UJF-of-vwH"/>
+                    <constraint firstItem="i1v-mt-uTj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="3" id="ZZp-Ha-Vgg"/>
+                    <constraint firstItem="i1v-mt-uTj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="6" id="dPS-0p-sAh"/>
                     <constraint firstAttribute="trailingMargin" secondItem="i1v-mt-uTj" secondAttribute="trailing" constant="3" id="eHg-35-DhV"/>
                 </constraints>
             </tableViewCellContentView>

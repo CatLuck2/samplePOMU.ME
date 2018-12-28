@@ -61,18 +61,18 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q7g-MK-94n">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="987"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B0t-Ml-l5R">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B0t-Ml-l5R">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="163"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.96768277520000001" green="0.96768277520000001" blue="0.96768277520000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </imageView>
-                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JXt-6K-kyq">
-                                                <rect key="frame" x="0.0" y="531" width="375" height="511"/>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JXt-6K-kyq">
+                                                <rect key="frame" x="0.0" y="531" width="375" height="448"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <connections>
-                                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="edT-QR-v0s"/>
-                                                    <outlet property="delegate" destination="BYZ-38-t0r" id="zwK-jq-qmM"/>
+                                                    <outlet property="dataSource" destination="Y5E-M8-ueB" id="5np-4D-4Lo"/>
+                                                    <outlet property="delegate" destination="Y5E-M8-ueB" id="hoj-QU-itX"/>
                                                 </connections>
                                             </tableView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Npf-rD-hYT">
@@ -178,7 +178,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2478" y="-932"/>
+            <point key="canvasLocation" x="2477.5999999999999" y="-932.83358320839591"/>
         </scene>
         <!--マイページ-->
         <scene sceneID="tne-QT-ifu">
@@ -194,7 +194,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5sm-4R-Uym">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1187"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vl5-PN-sac">
+                                            <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vl5-PN-sac">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="163"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.96768277519893897" green="0.96768277519893897" blue="0.96768277519893897" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -398,6 +398,17 @@
                     <view key="view" contentMode="scaleToFill" id="bZk-Z3-xYw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8JF-mA-HpS">
+                                <rect key="frame" x="84" y="280" width="207" height="106"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                <state key="normal" title="ご意見はこちら"/>
+                                <connections>
+                                    <action selector="contactForm:" destination="EJu-Ep-BbE" eventType="touchUpInside" id="no7-L2-Y3N"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="HiT-uF-gne"/>
                     </view>
@@ -405,7 +416,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jzz-Th-pcW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="342" y="1348"/>
+            <point key="canvasLocation" x="341.60000000000002" y="1347.9760119940031"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="wqu-Tg-4J6">

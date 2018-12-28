@@ -30,12 +30,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     //ユーザー
     let user = NCMBUser.current()
-    //URLとコメントを持つItemクラス
+    //URLとコメントを持つ配列
     var object = ["",""]
-    //Itemクラスを格納する配列
+    //配列を格納する配列
     var objects = [[String]]()
-    
-    //NCMBに保存するための
     
     //セルの色を格納
     var itemColor = UIColor()
@@ -114,72 +112,75 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        //NCMBからユーザー情報を取得
-        if let _ = user!.object(forKey: "Profile") {
-            
-            //プロフィール
-            profileLabel.text = (user!.object(forKey: "Profile") as! String)
-            //ユーザー名
-            userID.text = "@" + (user!.userName)!
-            //SNSのURLを取得
-            twitterURL = user!.object(forKey: "TwitterURL") as! String
-            if twitterURL != "" {
-                twitterIcon.alpha = 1.0
-            } else {
-                twitterIcon.alpha = 0.5
-            }
-            instagramURL = user!.object(forKey: "InstagramURL") as! String
-            if instagramURL != "" {
-                instagramIcon.alpha = 1.0
-            } else {
-                instagramIcon.alpha = 0.5
-            }
-            facebookURL = user!.object(forKey: "FacebookURL") as! String
-            if facebookURL != "" {
-                facebookIcon.alpha = 1.0
-            } else {
-                facebookIcon.alpha = 0.5
-            }
-            //アイテムを取得
-            objects = user!.object(forKey: "Item") as! [[String]]
-            if isEditMode == true {
-                objects.append(["追加する",""])
+        if isEditMode == false {
+            //NCMBからユーザー情報を取得
+            if let _ = user!.object(forKey: "Profile") {
+                //プロフィール
+                profileLabel.text = (user!.object(forKey: "Profile") as! String)
+                //ユーザー名
+                userID.text = "@" + (user!.userName)!
+                //SNSのURLを取得
+                twitterURL = user!.object(forKey: "TwitterURL") as! String
+                if twitterURL != "" {
+                    twitterIcon.alpha = 1.0
+                } else {
+                    twitterIcon.alpha = 0.5
+                }
+                instagramURL = user!.object(forKey: "InstagramURL") as! String
+                if instagramURL != "" {
+                    instagramIcon.alpha = 1.0
+                } else {
+                    instagramIcon.alpha = 0.5
+                }
+                facebookURL = user!.object(forKey: "FacebookURL") as! String
+                if facebookURL != "" {
+                    facebookIcon.alpha = 1.0
+                } else {
+                    facebookIcon.alpha = 0.5
+                }
+                //アイテムを取得
+                objects = user!.object(forKey: "Item") as! [[String]]
+                if isEditMode == true {
+                    objects.append(["追加する",""])
+                } else {}
+                //更新
+                tableView.reloadData()
+                
             } else {}
-            //更新
-            tableView.reloadData()
             
+            //NCMBから画像を取得
+            if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
+                //テーマ画像を取得
+                readData_theme.getDataInBackground { (data, error) in
+                    if error != nil {
+                        self.themeImage.image = UIImage(named: "icons8-画像-100.png")
+                        print(error)
+                    } else {
+                        self.themeImage.image = UIImage(data: data!)
+                    }
+                }
+            } else {
+                //代わりの画像を用意
+                self.themeImage.image = UIImage(named: "icons8-画像-100.png")
+            }
+            
+            if let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
+                //アイコン画像を取得
+                readData_icon.getDataInBackground { (data, error) in
+                    if error != nil {
+                        self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
+                        print(error)
+                    } else {
+                        self.iconImage.image = UIImage(data: data!)
+                    }
+                }
+            } else {
+                //代わりの画像を用意
+                self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
+            }
         } else {}
         
-        //NCMBから画像を取得
-        if let readData_theme = NCMBFile.file(withName: "theme " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
-            //テーマ画像を取得
-            readData_theme.getDataInBackground { (data, error) in
-                if error != nil {
-                    self.themeImage.image = UIImage(named: "icons8-画像-100.png")
-                    print(error)
-                } else {
-                    self.themeImage.image = UIImage(data: data!)
-                }
-            }
-        } else {
-            //代わりの画像を用意
-            self.themeImage.image = UIImage(named: "icons8-画像-100.png")
-        }
         
-        if let readData_icon = NCMBFile.file(withName: "icon " + NCMBUser.current().objectId, data: nil) as? NCMBFile {
-            //アイコン画像を取得
-            readData_icon.getDataInBackground { (data, error) in
-                if error != nil {
-                    self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
-                    print(error)
-                } else {
-                    self.iconImage.image = UIImage(data: data!)
-                }
-            }
-        } else {
-            //代わりの画像を用意
-            self.iconImage.image = UIImage(named: "icons8-コンタクト-96.png")
-        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -205,7 +206,7 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 cell.linkImageView.backgroundColor = UIColor.white
             }
         }
-        //セルにtitlaプロパティを代入
+        //セルにtitlプロパティを代入
         cell.textLabel?.text = objects[indexPath.row][0]
         //セルのテキストを中央揃いにする
         cell.textLabel?.textAlignment = .center
@@ -322,12 +323,12 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                         //配列からテキストを取り出す
                         for textField in textfield {
                             switch textField.tag {
-                            case 1:
+                            case 0:
                                 //textFieldに入力した内容をobjectのtitleプロパティに追加
-                                self.objects[indexPath.row][1] = textField.text!
-                            case 2:
-                                //textFieldに入力した内容をobjectのプロパティに追加
                                 self.objects[indexPath.row][0] = textField.text!
+                            case 1:
+                                //textFieldに入力した内容をobjectのプロパティに追加
+                                self.objects[indexPath.row][1] = textField.text!
                             default: break
                             }
                         }
@@ -343,13 +344,13 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
                         //アラートにtextFieldを追加
                         editAlert.addTextField { (text:UITextField!) in
                             text.text = self.objects[indexPath.row][1]
-                            text.placeholder = "URLリンク"
-                            text.tag = 1
+                            text.placeholder = "URLタイトル"
+                            text.tag = 0
                         }
                         editAlert.addTextField { (text:UITextField!) in
                             text.text = self.objects[indexPath.row][0]
-                            text.placeholder = "URLタイトル"
-                            text.tag = 2
+                            text.placeholder = "URLリンク"
+                            text.tag = 1
                         }
                     //コメントの場合
                     } else {
@@ -380,7 +381,10 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             }
         //編集画面でないなら
         } else {
-            tableView.deselectRow(at: indexPath, animated: true)
+            //もしリンクならリンク先を開く
+            if objects[indexPath.row][1] != "" {
+                openSNSLink(url: objects[indexPath.row][1])
+            } else {}
         }
     }
     
