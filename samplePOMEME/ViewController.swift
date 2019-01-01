@@ -68,12 +68,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tableView.refreshControl = reflesh
         
     }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//
-//
-//    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.users.count
@@ -153,9 +147,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             searchBar.placeholder = "ユーザーを検索"
             //検索バーのスタイル
             searchBar.autocapitalizationType = UITextAutocapitalizationType.none
-            //NavigationTitleが置かれるView?
+            //NavigationTitleが置かれる場所に検索バーを設置
             navigationItem.titleView = searchBar
-            //titleViewのサイズ
+            //NavigationTitleのサイズを検索バーと同じにする
             navigationItem.titleView?.frame = searchBar.frame
             //NavigationBarにセット
             self.searchBar = searchBar
@@ -207,7 +201,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.tableView.reloadData()
             }
         })
-        
     }
     
     //インジケーター用のloadUser

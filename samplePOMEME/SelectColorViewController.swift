@@ -13,7 +13,19 @@ class SelectColorViewController: UIViewController,UITableViewDelegate,UITableVie
     @IBOutlet weak var tableView: UITableView!
     
     //セルの色
-    let color:[UIColor] = [UIColor.black,UIColor.darkGray,UIColor.lightGray,UIColor.gray,UIColor.red,UIColor.green,UIColor.blue,UIColor.cyan,UIColor.yellow,UIColor.magenta,UIColor.orange,UIColor.purple,UIColor.brown]
+    let color:[UIColor] = [UIColor.black,
+                           UIColor.darkGray,
+                           UIColor.lightGray,
+                           UIColor.gray,
+                           UIColor.red,
+                           UIColor.green,
+                           UIColor.blue,
+                           UIColor.cyan,
+                           UIColor.yellow,
+                           UIColor.magenta,
+                           UIColor.orange,
+                           UIColor.purple,
+                           UIColor.brown]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return color.count

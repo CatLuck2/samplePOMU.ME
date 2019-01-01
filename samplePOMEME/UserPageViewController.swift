@@ -124,40 +124,6 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
         super.viewWillAppear(animated)
         
         if isEditMode == false {
-            //NCMBからユーザー情報を取得
-//            if let _ = user!.object(forKey: "Profile") {
-//                //プロフィール
-//                profileLabel.text = (user!.object(forKey: "Profile") as! String)
-//                //ユーザー名
-//                userID.text = "@" + (user!.userName)!
-//                //SNSのURLを取得
-//                twitterURL = user!.object(forKey: "TwitterURL") as! String
-//                if twitterURL != "" {
-//                    twitterIcon.alpha = 1.0
-//                } else {
-//                    twitterIcon.alpha = 0.5
-//                }
-//                instagramURL = user!.object(forKey: "InstagramURL") as! String
-//                if instagramURL != "" {
-//                    instagramIcon.alpha = 1.0
-//                } else {
-//                    instagramIcon.alpha = 0.5
-//                }
-//                facebookURL = user!.object(forKey: "FacebookURL") as! String
-//                if facebookURL != "" {
-//                    facebookIcon.alpha = 1.0
-//                } else {
-//                    facebookIcon.alpha = 0.5
-//                }
-//                //アイテムを取得
-//                objects = user!.object(forKey: "Item") as! [[String]]
-//                if isEditMode == true {
-//                    objects.append(["追加する",""])
-//                } else {}
-//                //更新
-//                tableView.reloadData()
-//
-//            } else {}
             
             //取得したユーザーからデータを取得
             if let _ = user!.object(forKey: "Profile") as? String {
@@ -447,6 +413,8 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //編集画面でないなら
         } else {
             //もしリンクならリンク先を開く
+            //アイテム：[[String]]
+            //[0]:コメント [1]:リンク
             if objects[indexPath.row][1] != "" {
                 openSNSLink(url: objects[indexPath.row][1])
             } else {}
@@ -786,17 +754,16 @@ class UserPageViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
     
     //画像が回転しないように加工
-    //    func translate(from image: UIImage) -> UIImage? {
-    //        guard let cgImage1 = image.cgImage else { return nil }
-    //        let ciImage = CIImage(cgImage: cgImage1)
-    //        let ciContext = CIContext(options: nil)
-    //
-    //        /* CIImageを使用した画像編集処理 */
-    //
-    //        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
-    //        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
-    //        return result
-    //    }
+//    func translate(from image: UIImage) -> UIImage? {
+//        guard let cgImage1 = image.cgImage else { return nil }
+//        let ciImage = CIImage(cgImage: cgImage1)
+//        let ciContext = CIContext(options: nil)
+//        
+//        /* CIImageを使用した画像編集処理 */
+//        guard let cgImage2: CGImage = ciContext.createCGImage(image, from: image.extent) else { return nil }
+//        let result = UIImage(cgImage: cgImage2, scale: 0.4, orientation: image.imageOrientation)
+//        return result
+//    }
     
     //ログアウトする際の処理
     func syncronize() {
